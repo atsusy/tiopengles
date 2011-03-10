@@ -26,10 +26,10 @@
 		24DD6CFA1134B3F500162E58 /* ComTiopenglesModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DD6CF81134B3F500162E58 /* ComTiopenglesModule.m */; };
 		24DE9E1111C5FE74003F90F6 /* ComTiopenglesModuleAssets.h in Headers */ = {isa = PBXBuildFile; fileRef = 24DE9E0F11C5FE74003F90F6 /* ComTiopenglesModuleAssets.h */; };
 		24DE9E1211C5FE74003F90F6 /* ComTiopenglesModuleAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DE9E1011C5FE74003F90F6 /* ComTiopenglesModuleAssets.m */; };
+		3129741D13289396005C122A /* ComTiopengles3DModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 3129741B13289396005C122A /* ComTiopengles3DModel.h */; };
+		3129741E13289396005C122A /* ComTiopengles3DModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3129741C13289396005C122A /* ComTiopengles3DModel.m */; };
 		3156AF201324CBBC002090EA /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3156AF1F1324CBBC002090EA /* OpenGLES.framework */; };
 		3156AF221324CBBC002090EA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3156AF211324CBBC002090EA /* QuartzCore.framework */; };
-		31CF908A13286DC300F240D7 /* ComTiopengles3DModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 31CF908813286DC300F240D7 /* ComTiopengles3DModel.h */; };
-		31CF908B13286DC300F240D7 /* ComTiopengles3DModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 31CF908913286DC300F240D7 /* ComTiopengles3DModel.m */; };
 		31D38110132779A5009E5593 /* libopencv_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D3810F132779A5009E5593 /* libopencv_core.a */; };
 		31E8A1D01326235D00377E85 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31E8A1CF1326235D00377E85 /* UIKit.framework */; };
 		31E8A1DC1326238200377E85 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31E8A1DB1326238200377E85 /* CoreGraphics.framework */; };
@@ -59,10 +59,10 @@
 		24DD6D1B1134B66800162E58 /* titanium.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = titanium.xcconfig; sourceTree = "<group>"; };
 		24DE9E0F11C5FE74003F90F6 /* ComTiopenglesModuleAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesModuleAssets.h; path = Classes/ComTiopenglesModuleAssets.h; sourceTree = "<group>"; };
 		24DE9E1011C5FE74003F90F6 /* ComTiopenglesModuleAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopenglesModuleAssets.m; path = Classes/ComTiopenglesModuleAssets.m; sourceTree = "<group>"; };
+		3129741B13289396005C122A /* ComTiopengles3DModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopengles3DModel.h; path = Classes/ComTiopengles3DModel.h; sourceTree = "<group>"; };
+		3129741C13289396005C122A /* ComTiopengles3DModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopengles3DModel.m; path = Classes/ComTiopengles3DModel.m; sourceTree = "<group>"; };
 		3156AF1F1324CBBC002090EA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		3156AF211324CBBC002090EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		31CF908813286DC300F240D7 /* ComTiopengles3DModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComTiopengles3DModel.h; sourceTree = "<group>"; };
-		31CF908913286DC300F240D7 /* ComTiopengles3DModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComTiopengles3DModel.m; sourceTree = "<group>"; };
 		31D3810F132779A5009E5593 /* libopencv_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_core.a; path = opencv_universal/lib/libopencv_core.a; sourceTree = "<group>"; };
 		31E8A1CF1326235D00377E85 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		31E8A1DB1326238200377E85 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -129,6 +129,8 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				3129741B13289396005C122A /* ComTiopengles3DModel.h */,
+				3129741C13289396005C122A /* ComTiopengles3DModel.m */,
 				31FE6445132711EB00F3734D /* ComTiopenglesView.h */,
 				31FE6446132711EB00F3734D /* ComTiopenglesView.m */,
 				31FE6447132711EB00F3734D /* ComTiopenglesViewProxy.h */,
@@ -139,8 +141,6 @@
 				24DE9E1011C5FE74003F90F6 /* ComTiopenglesModuleAssets.m */,
 				24DD6CF71134B3F500162E58 /* ComTiopenglesModule.h */,
 				24DD6CF81134B3F500162E58 /* ComTiopenglesModule.m */,
-				31CF908813286DC300F240D7 /* ComTiopengles3DModel.h */,
-				31CF908913286DC300F240D7 /* ComTiopengles3DModel.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -176,7 +176,7 @@
 				31FE6450132711EB00F3734D /* ComTiopenglesViewProxy.h in Headers */,
 				31FE6452132711EB00F3734D /* ConstantsAndMacros.h in Headers */,
 				31FE6453132711EB00F3734D /* cube.h in Headers */,
-				31CF908A13286DC300F240D7 /* ComTiopengles3DModel.h in Headers */,
+				3129741D13289396005C122A /* ComTiopengles3DModel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,7 +251,7 @@
 				24DE9E1211C5FE74003F90F6 /* ComTiopenglesModuleAssets.m in Sources */,
 				31FE644F132711EB00F3734D /* ComTiopenglesView.m in Sources */,
 				31FE6451132711EB00F3734D /* ComTiopenglesViewProxy.m in Sources */,
-				31CF908B13286DC300F240D7 /* ComTiopengles3DModel.m in Sources */,
+				3129741E13289396005C122A /* ComTiopengles3DModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

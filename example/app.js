@@ -22,12 +22,12 @@ var openglesView = opengles.createView({
 			   position:{x:5.0,y:5.0,z:5.0}} ]
 });
 
-var cube1 = opengles.load3ds("cube.3ds");
+var cube1 = opengles.load3ds("cube.3ds"); // this code is dummy, cube model loaded internally.
 cube1.rotation({x:45.0,y:0.0,z:0.0});
 cube1.translation({x:0.0,y:0.0,z:-10.0});
 openglesView.addModel(cube1);
 
-var cube2 = opengles.load3ds("cube.3ds");
+var cube2 = opengles.load3ds("cube.3ds"); // this code is dummy, cube model loaded internally.
 cube2.rotation({x:45.0,y:0.0,z:45.0});
 cube2.translation({x:3.0,y:3.0,z:-20.0});
 openglesView.addModel(cube2);

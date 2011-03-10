@@ -1,0 +1,17 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 0.1
+description: OpenGL ES module
+author: KATAOKA,Atsushi
+license: MIT License
+copyright: Copyright (c) 2011 by KATAOKA,Atsushi
+
+
+# these should not be edited
+name: tiopengles
+moduleid: com.tiopengles
+guid: eecef08e-0041-4ceb-b094-43f6cafb8406
+platform: iphone
+minsdk: 1.6.0

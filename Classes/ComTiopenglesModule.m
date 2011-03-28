@@ -92,7 +92,7 @@
     ENSURE_ARRAY(args);
     id filename = [args objectAtIndex:0];
     ENSURE_TYPE(filename, NSString);
-	return [ComTiopengles3DModel load:filename];
+	return [ComTiopengles3DModel load3ds:filename];
 }
 
 @end

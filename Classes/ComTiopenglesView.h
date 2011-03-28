@@ -24,7 +24,7 @@
 	float l_ambient[LIGHTS_MAX][4];
 	float l_diffuse[LIGHTS_MAX][4];
 	float l_specular[LIGHTS_MAX][4];
-	float l_position[LIGHTS_MAX][3];
+	float l_position[LIGHTS_MAX][4];
 	float l_direction[LIGHTS_MAX][3];
 	
     GLint backingWidth;
@@ -32,11 +32,14 @@
     
 	GLuint viewRenderbuffer, viewFramebuffer;
     GLuint depthRenderbuffer;
-	
+    
 	NSArray *lights;
 	NSMutableArray *models;
+    
+    NSTimer *sceneTimer;
+    BOOL sceneDrawing;
 }
-
+@property (nonatomic, assign) id camera;
 
 - (void)setZNear_:(id)value;
 - (void)setZFar_:(id)value;

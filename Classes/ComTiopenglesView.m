@@ -8,11 +8,18 @@
 
 #import "ComTiopenglesView.h"
 #import "ComTiopengles3DModel.h"
+#import "ComTiopenglesCameraProxy.h"
 #import "opencv/cv.h"
 #import "opencv/cxcore.h"
 #import <OpenGLES/ES1/glext.h>
 
+static const float objectPoint[] = { 0.0, 0.0, -5.0 };
+static const float grid_diffuse[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+static const float grid_ambient[4] = {0.2f, 0.2f, 0.2f, 1.0f};
+static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+
 @implementation ComTiopenglesView
+@synthesize camera;
 
 + (Class)layerClass 
 {
@@ -77,7 +84,18 @@
 	lights = [value retain];
 }
 
-- (void)setUserDepthBuffer_:(id)value
+- (id)camera_
+{
+    return self.camera;
+}
+
+- (void)setCamera_:(id)value
+{
+    ENSURE_TYPE(value, ComTiopenglesCameraProxy);
+    self.camera = value;
+}
+
+- (void)setDepthBuffer_:(id)value
 {
 	useDepthBuffer = [value intValue];
 	NSLog(@"userDepthBuffer set %d", useDepthBuffer);
@@ -87,21 +105,18 @@
 {
 	if(!lights)
 	{
+        glDisable(GL_LIGHTING);
 		return;
 	}
 
 	// Enable lighting
 	glEnable(GL_LIGHTING);
 	
-	static GLenum light_enums[] = { GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7 };
-
-	static const float objectPoint[] = { 0.0, 0.0, -5.0 };
-	NSLog(@"count of light:%d", [lights count]);
 	if([lights count] <= LIGHTS_MAX)
 	{
 		for(int i = 0; i < [lights count]; i++)
 		{
-			glEnable(light_enums[i]);
+			glEnable(GL_LIGHT0+i);
 			id light = [lights objectAtIndex:i];
 			ENSURE_DICT(light);
 			
@@ -111,8 +126,8 @@
 			l_ambient[i][1] = [[ambientDic objectForKey:@"g"] floatValue];
 			l_ambient[i][2] = [[ambientDic objectForKey:@"b"] floatValue];
 			l_ambient[i][3] = 1.0;
-			NSLog(@"light amb %f,%f,%f", l_ambient[i][0], l_ambient[i][1], l_ambient[i][2]);
-			glLightfv(light_enums[i], GL_AMBIENT, l_ambient[i]);
+			//NSLog(@"light amb %f,%f,%f", l_ambient[i][0], l_ambient[i][1], l_ambient[i][2]);
+			glLightfv(GL_LIGHT0+i, GL_AMBIENT, l_ambient[i]);
 			
 			id diffuseDic = [light objectForKey:@"diffuse"];
 			ENSURE_DICT(diffuseDic);
@@ -120,8 +135,8 @@
 			l_diffuse[i][1] = [[diffuseDic objectForKey:@"g"] floatValue];
 			l_diffuse[i][2] = [[diffuseDic objectForKey:@"b"] floatValue];
 			l_diffuse[i][3] = 1.0;
-			glLightfv(light_enums[i], GL_DIFFUSE, l_diffuse[i]);
-			NSLog(@"light dif %f,%f,%f", l_diffuse[i][0], l_diffuse[i][1], l_diffuse[i][2]);
+			glLightfv(GL_LIGHT0+i, GL_DIFFUSE, l_diffuse[i]);
+			//NSLog(@"light dif %f,%f,%f", l_diffuse[i][0], l_diffuse[i][1], l_diffuse[i][2]);
 			
 			id specularDic = [light objectForKey:@"specular"];
 			ENSURE_DICT(specularDic);
@@ -129,16 +144,17 @@
 			l_specular[i][1] = [[specularDic objectForKey:@"g"] floatValue];
 			l_specular[i][2] = [[specularDic objectForKey:@"b"] floatValue];
 			l_specular[i][3] = 1.0;
-			glLightfv(light_enums[i], GL_SPECULAR, l_specular[i]);
-			NSLog(@"light spc %f,%f,%f", l_specular[i][0], l_specular[i][1], l_specular[i][2]);
+			glLightfv(GL_LIGHT0+i, GL_SPECULAR, l_specular[i]);
+			//NSLog(@"light spc %f,%f,%f", l_specular[i][0], l_specular[i][1], l_specular[i][2]);
 			
 			id positionDic = [light objectForKey:@"position"];
 			ENSURE_DICT(positionDic);
 			l_position[i][0] = [[positionDic objectForKey:@"x"] floatValue];
 			l_position[i][1] = [[positionDic objectForKey:@"y"] floatValue];
-			l_position[i][2] = [[positionDic objectForKey:@"z"] floatValue];			
-			glLightfv(light_enums[i], GL_POSITION, l_position[i]); 
-			NSLog(@"light pos %f,%f,%f", l_position[i][0], l_position[i][1], l_position[i][2]);
+			l_position[i][2] = [[positionDic objectForKey:@"z"] floatValue];	
+            //[self multifv:light_position Matrix:camera_matrix];
+			glLightfv(GL_LIGHT0+i, GL_POSITION, l_position[i]); 
+			//NSLog(@"light pos %f,%f,%f", l_position[i][0], l_position[i][1], l_position[i][2]);
 
 			// Calculate light vector so it points at the object
 			l_direction[i][0] = l_position[i][0];
@@ -148,16 +164,14 @@
 			CvMat lightVec = cvMat(1, 3, CV_32F, l_direction);
 			cvSub(&objectVec, &lightVec, &lightVec, NULL);
 			cvNormalize(&lightVec, &lightVec, 1.0, 0, CV_L2, NULL);
-			glLightfv(light_enums[i], GL_SPOT_DIRECTION, l_direction[i]);
-			NSLog(@"light vec %f,%f,%f", l_direction[i][0], l_direction[i][1], l_direction[i][2]);
+			glLightfv(GL_LIGHT0+i, GL_SPOT_DIRECTION, l_direction[i]);
+			//NSLog(@"light vec %f,%f,%f", l_direction[i][0], l_direction[i][1], l_direction[i][2]);
 		}
 	}
 }
 
 -(void)setupView
 {
-	glEnable(GL_DEPTH_TEST);
-	
 	if(zNear == 0.0) { zNear = 0.01; }
 	if(zFar == 0.0) { zFar = 1000.0; }
 	if(fieldOfView == 0.0) { fieldOfView = 45.0; }
@@ -174,8 +188,10 @@
 	glViewport(0, 0, self.bounds.size.width, self.bounds.size.height);  
 	
 	glMatrixMode(GL_MODELVIEW);	
-	[self setupLights];
-	glLoadIdentity(); 	
+	
+    [self setupLights];
+	
+    glLoadIdentity(); 	
 }
 
 - (BOOL)createFramebuffer 
@@ -197,6 +213,7 @@
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, depthRenderbuffer);
         glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, backingWidth, backingHeight);
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, depthRenderbuffer);
+        glEnable(GL_DEPTH_TEST);
     }
     
     if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) 
@@ -207,6 +224,16 @@
 	
 	// setup view.
 	[self setupView];
+    
+    if(sceneTimer){
+        [sceneTimer invalidate];
+        RELEASE_TO_NIL(sceneTimer);
+    }
+    sceneTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/60.0 
+                                                  target:self
+                                                selector:@selector(drawView:) 
+                                                userInfo:nil 
+                                                 repeats:YES];
 
     return YES;
 }
@@ -230,23 +257,103 @@
     }
 }
 
-- (void)drawView 
+- (void)drawGrid
+{ 
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glLineWidth(0.5);
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, grid_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grid_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, grid_specular);
+
+    float vertices[100 * 3 * 2];
+    float normals[100 * 3 * 2];
+    
+    for(int i = 0; i < 100; i++){
+        normals[i * 6 + 0] = 0.0f;
+        normals[i * 6 + 1] = 1.0f;
+        normals[i * 6 + 2] = 0.0f;
+        normals[i * 6 + 3] = 0.0f;
+        normals[i * 6 + 4] = 1.0f;
+        normals[i * 6 + 5] = 0.0f;
+    }
+    glNormalPointer(GL_FLOAT, 0, normals);
+    
+    for(int i = 0; i < 100; i++){
+        vertices[i * 6 + 0] = -500.0f;
+        vertices[i * 6 + 1] = 0.0f;
+        vertices[i * 6 + 2] = (i - 100/2) * 10.0f;
+        vertices[i * 6 + 3] = 500.0f;
+        vertices[i * 6 + 4] = 0.0f;
+        vertices[i * 6 + 5] = (i - 100/2) * 10.0f;
+    }
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glDrawArrays(GL_LINES, 0, 200);
+    
+    for(int i = 0; i < 100; i++){
+        vertices[i * 6 + 0] = (i - 100/2) * 10.0f;
+        vertices[i * 6 + 1] = 0.0f;
+        vertices[i * 6 + 2] = -500.0f;
+        vertices[i * 6 + 3] = (i - 100/2) * 10.0f;
+        vertices[i * 6 + 4] = 0.0f;
+        vertices[i * 6 + 5] = 500.0f;
+    }
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glDrawArrays(GL_LINES, 0, 200);
+    
+    vertices[0] = 0.0f;
+    vertices[1] = 10000.0f;
+    vertices[2] = 0.0f;
+    vertices[3] = 0.0f;
+    vertices[4] = -10000.0f;
+    vertices[5] = 0.0f;
+    glLineWidth(2.0);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glDrawArrays(GL_LINES, 0, 2);
+}
+
+- (void)drawView:(NSTimer *)timer
 {
+    @synchronized(self){
+        if(sceneDrawing){
+            return;
+        }
+        sceneDrawing = YES;
+    }
+    
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
 
-	glColor4f(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	glEnable(GL_BLEND);
-	
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    if(self.camera){
+        [self.camera loadMatrix];
+    }
+    
+    [self setupLights];
+    [self drawGrid];
+    
 	for(id model in models)
 	{
+        glPushMatrix();
 		[model draw];
+        glPopMatrix();
 	}
 		
 	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
     [context presentRenderbuffer:GL_RENDERBUFFER_OES];
+    
+    @synchronized(self)
+    {
+        sceneDrawing = NO;
+    }
 }
 
 - (void)addModel:(id)args
@@ -266,11 +373,12 @@
     [EAGLContext setCurrentContext:context];
     [self destroyFramebuffer];
     [self createFramebuffer];
-    [self drawView];
+    [self drawView:nil];
 }
 
 - (void)dealloc
 {
+    self.camera = nil;
 	RELEASE_TO_NIL(lights);
 	RELEASE_TO_NIL(models);
 	[self destroyFramebuffer];	

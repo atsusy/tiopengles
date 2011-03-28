@@ -1,0 +1,30 @@
+José Luis Martín.
+C/Arco-AGÚero, 28, 1º
+06002 Badajoz España UE
+jotaele@iname.com
+http://www.arrakis.es/~jlmartin
+
+
+	Name of the project: R2-D2
+	Original Mesh: Dr. Harry Jones (SWMA)
+	Alias: R2-D2  
+	Date beginning: 02/23/2000
+	Date end: 05/18/2000
+	Format: 3DS MAX 2.5  
+	Nº. Objects: 214 
+	Nº. Faces: 70.063  
+	Nº. Lights: 0 (not included)  
+	Nº. Cameras: 0 (not included)  
+	Textures: Metal9.jpg Two bits maps with texts called dtadsp01.jpg and 
+dtadsp02.jpg
+	Animation: No  
+	Compression: No  
+	Quality: High  
+	Render: Quick  
+	Mejorable: Yes (Texture with noise or dirt for the target of the body)  
+	Based in…: Classic model of R2. EP IV, V and VI.  
+	References: Star Wars (it Has official of A New Hope year 1.977 ORIGINAL 
+SpanishTexts).  
+	It licenses: To modify, to improve, to encourage, to incorporate in other 
+models (figthers, 							characters, etc). please send me a copy of the 
+modifications.  

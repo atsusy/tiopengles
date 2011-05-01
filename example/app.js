@@ -21,7 +21,6 @@ var view = opengles.createView({
 	zNear:5.0,
 	zFar:1000.0,
 	fieldOfView:45.0,
-	depthBuffer:true,
 	lights:[ { ambient:{r:0.2,g:0.2,b:0.2}, 
 			   diffuse:{r:0.5,g:0.5,b:0.5}, 
 			  specular:{r:0.8,g:0.8,b:0.8},
@@ -52,8 +51,6 @@ r2d2.rotation({x:-90.0,y:0.0,z:0.0});
 r2d2.translation({x:0.0,y:40.0,z:0.0});
 view.addModel(r2d2);
 
-var pressing = {up:false, down:false, left:false, right:false, forward:false, back:false};
-
 var up = Ti.UI.createButton({
 	left:52,
 	bottom:48*2,
@@ -63,11 +60,8 @@ var up = Ti.UI.createButton({
 	title:'Up'
 });
 
-up.addEventListener('touchstart',function(e){
-	pressing.up = true;
-});
-up.addEventListener('touchend',function(e){
-	pressing.up = false;
+up.addEventListener('click',function(e){
+	camera.move({x:0.0, y:100.0, z:0.0});
 });
 window.add(up);
 
@@ -79,11 +73,8 @@ var down = Ti.UI.createButton({
 	opacity:0.4,
 	title:'Down'
 });
-down.addEventListener('touchstart',function(e){
-	pressing.down = true;
-});
-down.addEventListener('touchend',function(e){
-	pressing.down = false;
+down.addEventListener('click',function(e){
+	camera.move({x:0.0, y:-100.0, z:0.0});
 });
 
 window.add(down);
@@ -95,11 +86,8 @@ var right = Ti.UI.createButton({
 	opacity:0.4,
 	title:'Right'
 });
-right.addEventListener('touchstart',function(e){
-	pressing.right = true;
-});
-right.addEventListener('touchend',function(e){
-	pressing.right = false;
+right.addEventListener('click',function(e){
+	camera.move({x:100.0, y:0.0, z:0.0});
 });
 window.add(right);
 var left = Ti.UI.createButton({
@@ -110,11 +98,8 @@ var left = Ti.UI.createButton({
 	opacity:0.4,
 	title:'Left'
 });
-left.addEventListener('touchstart',function(e){
-	pressing.left = true;
-});
-left.addEventListener('touchend',function(e){
-	pressing.left = false;
+left.addEventListener('click',function(e){
+	camera.move({x:-100.0, y:0.0, z:0.0});
 });
 window.add(left);
 
@@ -127,11 +112,8 @@ var forward = Ti.UI.createButton({
 	title:'Forward'
 });
 window.add(forward);
-forward.addEventListener('touchstart', function(e){
-	pressing.forward = true;
-});
-forward.addEventListener('touchend', function(e){
-	pressing.forward = false;
+forward.addEventListener('click', function(e){
+	camera.move({x:0.0, y:0.0, z:-100.0});
 });
 
 var back = Ti.UI.createButton({
@@ -143,34 +125,30 @@ var back = Ti.UI.createButton({
 	title:'Back'
 });
 window.add(back);
-back.addEventListener('touchstart', function(e){
-	pressing.back = true;
+back.addEventListener('click', function(e){
+	camera.move({x:0.0, y:0.0, z:100.0});
 });
-back.addEventListener('touchend', function(e){
-	pressing.back = false;
+
+var info = Ti.UI.createLabel({
+	top:0,
+	width:'100%',
+	height:24,
+	font:{fontSize:14},
+	color:'#fff',
+	backgroundColor:'#000',
+	textAlign:'right',
+	opacity:0.7
+});
+window.add(info);
+
+window.addEventListener('open', function(){
+	r2d2.animate({rotation:{x:-90.0,y:90.0,z:0.0},duration:5000}, function(){
+		r2d2.animate({translation:{x:100.0,y:40.0,z:0.0},duration:5000});
+	});
 });
 
 setInterval(function(){
-	var vec = {x:0.0, y:0.0, z:0.0};
-	if(pressing.up){
-		vec.y = 10.0;
-	}
-	if(pressing.down){
-		vec.y = -10.0;
-	}
-	if(pressing.right){
-		vec.x = 10.0;
-	}
-	if(pressing.left){
-		vec.x = -10.0;
-	}
-	if(pressing.forward){
-		vec.z = -10.0;
-	}
-	if(pressing.back){
-		vec.z = 10.0;
-	}
-	camera.move(vec);
-}, 100);
+	info.text = parseInt(view.fps)+"fps/"+ parseInt(view.vertices)+"vertices";
+}, 1000);
 
 window.open();

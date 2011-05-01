@@ -17,6 +17,16 @@
 							   waitUntilDone:NO];
 }
 
+- (id)fps
+{
+    return [(ComTiopenglesView *)[self view] fps];
+}
+
+- (id)vertices
+{
+    return [(ComTiopenglesView *)[self view] vertices];
+}
+
 - (void)addModel:(id)name
 {
     [(ComTiopenglesView *)[self view] addModel:name];
@@ -25,6 +35,7 @@
 - (void)viewDidAttach
 {
 	[(ComTiopenglesView *)[self view] openContext];	
+    
 }
 
 - (void)viewDidDetach

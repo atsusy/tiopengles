@@ -1,16 +1,19 @@
 //
-//  ComTiopenglesCameraProxy.h
+//  ComTiopengles3DModelProxy.h
 //  tiopengles
 //
-//  Created by KATAOKA,Atsushi on 11/03/28.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Created by KATAOKA,Atsushi on 11/03/10.
+//  Copyright 2011 LANGRISE Co.,Ltd. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreFoundation/CoreFoundation.h>
+#import <OpenGLES/ES1/gl.h>
 #import "TiProxy.h"
+#import "ModelDataProtocol.h"
 #import "AnimationLayer.h"
 
-@interface ComTiopenglesCameraProxy : TiProxy {
+@interface ComTiopengles3DModelProxy : TiProxy {
     id animationLayer;
     
     float rotation_x;
@@ -20,10 +23,12 @@
     float translation_x;
     float translation_y;
     float translation_z;
-
-    float camera_matrix[16];
     
-    id animationCallback;
+    NSString *dataSourcePath;
+    id<ModelDataProtocol> dataSource;
+    
+    NSMutableDictionary *animationCallbacks;
+    NSMutableDictionary *animationKeys;
 }
 @property (nonatomic, readonly) id animationLayer;
 
@@ -35,13 +40,13 @@
 @property (nonatomic, retain) NSNumber *translation_y;
 @property (nonatomic, retain) NSNumber *translation_z;
 
-- (void)loadMatrix;
++ (id)load3ds:(NSString *)name;
 
-- (void)pitch:(id)args;
-- (void)yaw:(id)args;
-- (void)roll:(id)args;
-- (void)move:(id)args;
+- (GLuint)loadTexture:(NSString *)path;
+- (id)initWith3dsPath:(NSString *)path;
 
-- (void)animate:(id)args;
+- (void)rotation:(id)value;
+- (void)translation:(id)value;
 
+- (int)draw;
 @end

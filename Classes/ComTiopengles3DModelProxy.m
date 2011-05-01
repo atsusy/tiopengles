@@ -1,21 +1,23 @@
 //
-//  ComTiopengles3DModel.m
+//  ComTiopengles3DModelProxy.m
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/10.
 //  Copyright 2011 LANGRISE Co.,Ltd. All rights reserved.
 //
 
-#import "ComTiopengles3DModel.h"
+#import "ComTiopengles3DModelProxy.h"
 #import "TiUtils.h"
 #import "ModelData3ds.h"
+#import "ComTiopenglesView.h"
 
-@implementation ComTiopengles3DModel
+@implementation ComTiopengles3DModelProxy
+@synthesize animationLayer;
 
 + (id)load3ds:(NSString *)path
 {
     // load model
-    return [[[ComTiopengles3DModel alloc] initWith3dsPath:path] autorelease];
+    return [[[ComTiopengles3DModelProxy alloc] initWith3dsPath:path] autorelease];
 }
 
 - (GLuint)loadTexture:(NSString *)path
@@ -93,10 +95,79 @@
     if(fileExists){
         dataSourcePath = [path retain];
         dataSource = [[ModelData3ds alloc] initWithData:[NSData dataWithContentsOfFile:filePath]];
+        animationLayer = [[AnimationLayer alloc] initWithTarget:self];
+        animationCallbacks = [[NSMutableDictionary alloc] init];
+        animationKeys = [[NSMutableDictionary alloc] init];
     }else{
         NSLog(@"[ERROR] 3ds file not exists:%@", path);
     }
     return self;
+}
+
+- (NSNumber *)rotation_x
+{
+    return [NSNumber numberWithFloat:rotation_x];
+}
+
+- (void)setRotation_x:(NSNumber *)value
+{
+    rotation_x = [value floatValue];
+    [animationLayer setRotation_x:NUMFLOAT(rotation_x)];
+}
+
+- (NSNumber *)rotation_y
+{
+    return [NSNumber numberWithFloat:rotation_y];
+}
+
+- (void)setRotation_y:(NSNumber *)value
+{
+    rotation_y = [value floatValue];
+    [animationLayer setRotation_y:NUMFLOAT(rotation_y)];
+}
+
+- (NSNumber *)rotation_z
+{
+    return [NSNumber numberWithFloat:rotation_z];
+}
+
+- (void)setRotation_z:(NSNumber *)value
+{
+    rotation_z = [value floatValue];
+    [animationLayer setRotation_z:NUMFLOAT(rotation_z)];
+}
+
+- (NSNumber *)translation_x
+{
+    return [NSNumber numberWithFloat:translation_x];
+}
+
+- (void)setTranslation_x:(NSNumber *)value
+{
+    translation_x = [value floatValue];
+    [animationLayer setTranslation_x:NUMFLOAT(translation_x)];
+}
+
+- (NSNumber *)translation_y
+{
+    return [NSNumber numberWithFloat:translation_y];
+}
+
+- (void)setTranslation_y:(NSNumber *)value
+{
+    translation_y = [value floatValue];
+    [animationLayer setTranslation_y:NUMFLOAT(translation_y)];
+}
+
+- (NSNumber *)translation_z
+{
+    return [NSNumber numberWithFloat:translation_z];
+}
+
+- (void)setTranslation_z:(NSNumber *)value
+{
+    translation_z = [value floatValue];
+    [animationLayer setTranslation_z:NUMFLOAT(translation_z)];
 }
 
 - (void)rotation:(id)value
@@ -104,9 +175,10 @@
     ENSURE_ARRAY(value);
     id rotationDic = [value objectAtIndex:0];
     ENSURE_DICT(rotationDic);
-	rotation[0] = [[rotationDic objectForKey:@"x"] floatValue];
-	rotation[1] = [[rotationDic objectForKey:@"y"] floatValue];
-	rotation[2] = [[rotationDic objectForKey:@"z"] floatValue];
+    
+    [self setRotation_x:[rotationDic objectForKey:@"x"]];
+    [self setRotation_y:[rotationDic objectForKey:@"y"]];
+    [self setRotation_z:[rotationDic objectForKey:@"z"]];
 }
 
 - (void)translation:(id)value
@@ -114,12 +186,13 @@
 	ENSURE_ARRAY(value);
     id translationDic = [value objectAtIndex:0];
     ENSURE_DICT(translationDic);
-	translation[0] = [[translationDic objectForKey:@"x"] floatValue];
-	translation[1] = [[translationDic objectForKey:@"y"] floatValue];
-	translation[2] = [[translationDic objectForKey:@"z"] floatValue];
+    
+    [self setTranslation_x:[translationDic objectForKey:@"x"]];
+    [self setTranslation_y:[translationDic objectForKey:@"y"]];
+    [self setTranslation_z:[translationDic objectForKey:@"z"]];
 }
 
-- (void)draw
+- (int)draw
 {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -129,11 +202,12 @@
     static float default_specular[4] = {1.0, 1.0, 1.0, 1.0};
     static float default_shineness = 25.0;
     
-    glTranslatef(translation[0], translation[1], translation[2]);      
-    glRotatef(rotation[2], 0.0, 0.0, 1.0);
-    glRotatef(rotation[1], 0.0, 1.0, 0.0);
-    glRotatef(rotation[0], 1.0, 0.0, 0.0);
+    glTranslatef(translation_x, translation_y, translation_z);      
+    glRotatef(rotation_z, 0.0, 0.0, 1.0);
+    glRotatef(rotation_y, 0.0, 1.0, 0.0);
+    glRotatef(rotation_x, 1.0, 0.0, 0.0);
     
+    int verticesCount = 0;
     for(id model_chunk in [dataSource model_chunks]){
         MODEL_CHUNK *model_chunkp = (MODEL_CHUNK *)[model_chunk unsignedIntValue];
 
@@ -152,6 +226,7 @@
              */
         }
         
+        verticesCount += model_chunkp->num_vertices;
         glVertexPointer(3, GL_FLOAT, 0, model_chunkp->vertices);
         glNormalPointer(GL_FLOAT, 0, model_chunkp->normals);
         
@@ -213,12 +288,147 @@
     }
     
     glBindTexture(GL_TEXTURE_2D, 0);   
+    return verticesCount;
+}
+
+- (NSString *)generateUuidString { 
+    // create a new UUID which you own 
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault); 
+    // create a new CFStringRef (toll-free bridged to NSString) 
+    // that you own 
+    NSString *uuidString = (NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid); 
+    // transfer ownership of the string 
+    // to the autorelease pool 
+    [uuidString autorelease];
+    // release the UUID 
+    CFRelease(uuid);
+    
+    return uuidString; 
+}
+
+- (void)animate:(id)args
+{
+    ENSURE_UI_THREAD_1_ARG(args);
+
+    ENSURE_ARRAY(args);
+    
+    id params = [args objectAtIndex:0];
+    ENSURE_DICT(params);
+    
+    NSString *animationKey = [self generateUuidString];
+    [animationKeys setObject:[[NSMutableArray alloc] init] forKey:animationKey];
+
+    id callback;
+    if([args count] > 1){
+        callback = [args objectAtIndex:1];
+        ENSURE_TYPE(callback, KrollCallback);
+        
+        [animationCallbacks setObject:callback forKey:animationKey];
+    }    
+    
+    float duration = [[params objectForKey:@"duration"] floatValue] / 1000.0f;
+
+    NSArray *xyz = [NSArray arrayWithObjects:@"x",@"y",@"z", nil]; 
+    SEL get, set;
+    NSString *key;
+    NSString *keyPath;
+
+    if([params objectForKey:@"rotation"]){
+        id rotation = [params objectForKey:@"rotation"];
+        ENSURE_DICT(rotation);
+        
+        for(NSString *axis in xyz){
+            get = NSSelectorFromString([NSString stringWithFormat:@"rotation_%@", axis]);            
+            set = NSSelectorFromString([NSString stringWithFormat:@"setRotation_%@:", axis]);            
+            key = [NSString stringWithFormat:@"%@_rotation_%@", animationKey, axis];
+            keyPath = [NSString stringWithFormat:@"rotation_%@",axis];
+            
+            CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:keyPath];
+            anim.duration = duration;
+            anim.fromValue = [self performSelector:get];
+            anim.toValue = [rotation objectForKey:axis];
+            anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            anim.delegate = self;
+            anim.removedOnCompletion = NO;
+
+            [animationLayer addAnimation:anim forKey:key];
+            [animationLayer performSelector:set withObject:anim.toValue];
+            
+            [[animationKeys valueForKey:animationKey] addObject:key];
+        }        
+    }
+    
+    if([params objectForKey:@"translation"]){
+        id translation = [params objectForKey:@"translation"];
+        ENSURE_DICT(translation);
+        
+        for(NSString *axis in xyz){
+            get = NSSelectorFromString([NSString stringWithFormat:@"translation_%@", axis]);            
+            set = NSSelectorFromString([NSString stringWithFormat:@"setTranslation_%@:", axis]);            
+            key = [NSString stringWithFormat:@"%@_translation_%@", animationKey, axis];
+            keyPath = [NSString stringWithFormat:@"translation_%@",axis];
+            
+            CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:keyPath];
+            anim.duration = duration;
+            anim.fromValue = [self performSelector:get];
+            anim.toValue = [translation objectForKey:axis];
+            anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            anim.delegate = self;
+            anim.removedOnCompletion = NO;
+            
+            [animationLayer addAnimation:anim forKey:key];
+            [animationLayer performSelector:set withObject:anim.toValue];
+
+            [[animationKeys valueForKey:animationKey] addObject:key];
+        }        
+    }
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
+{
+    NSMutableArray *stopped = [[NSMutableArray alloc] init];
+    
+    for(NSString *animationKey in animationKeys){
+        NSMutableArray *keys = [animationKeys objectForKey:animationKey];
+        for(NSString *key in keys){
+            if([theAnimation isEqual:[animationLayer animationForKey:key]]){
+                [animationLayer removeAnimationForKey:key];
+                [keys removeObject:key];
+                break;
+            }
+        }
+    
+        if([keys count] == 0){
+            [stopped addObject:animationKey];
+        }
+    }
+    
+    for(NSString *key in stopped){
+        KrollCallback *callback = [animationCallbacks objectForKey:key];
+        [callback call:nil thisObject:self];
+
+        [animationKeys removeObjectForKey:key];
+        [animationCallbacks removeObjectForKey:key];
+    }
+
+    [stopped release];
 }
 
 - (void)dealloc
 {
     RELEASE_TO_NIL(dataSourcePath);
     RELEASE_TO_NIL(dataSource);
+    RELEASE_TO_NIL(animationLayer);
+    RELEASE_TO_NIL(animationCallbacks);
+    RELEASE_TO_NIL(animationKeys);
+    
+    self.rotation_x = nil;
+    self.rotation_y = nil;
+    self.rotation_z = nil;
+    
+    self.translation_x = nil;
+    self.translation_y = nil;
+    self.translation_z = nil;
     [super dealloc];
 }
 @end

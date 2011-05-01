@@ -11,7 +11,9 @@
 #import "ComTiopenglesView.h"
 
 @interface ComTiopenglesViewProxy : TiViewProxy {
-
 }
+@property (nonatomic, readonly) id fps;
+@property (nonatomic, readonly) id vertices;
+
 - (void)addModel:(id)model;
 @end

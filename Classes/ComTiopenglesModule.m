@@ -5,7 +5,7 @@
  * and licensed under the Apache Public License (version 2)
  */
 #import "ComTiopenglesModule.h"
-#import "ComTiopengles3DModel.h"
+#import "ComTiopengles3DModelProxy.h"
 #import "TiBase.h"
 #import "TiHost.h"
 #import "TiUtils.h"
@@ -92,7 +92,7 @@
     ENSURE_ARRAY(args);
     id filename = [args objectAtIndex:0];
     ENSURE_TYPE(filename, NSString);
-	return [ComTiopengles3DModel load3ds:filename];
+	return [ComTiopengles3DModelProxy load3ds:filename];
 }
 
 @end

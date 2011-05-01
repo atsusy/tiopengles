@@ -10,40 +10,122 @@
 #import <OpenGLES/ES1/gl.h>
 
 @implementation ComTiopenglesCameraProxy
+@synthesize animationLayer;
 
+- (NSNumber *)rotation_x
+{
+    return [NSNumber numberWithFloat:rotation_x];
+}
+
+- (void)setRotation_x:(NSNumber *)value
+{
+    rotation_x = [value floatValue];
+    [animationLayer setRotation_x:value];
+}
+
+- (NSNumber *)rotation_y
+{
+    return [NSNumber numberWithFloat:rotation_y];
+}
+
+- (void)setRotation_y:(NSNumber *)value
+{   
+    rotation_y = [value floatValue];
+    [animationLayer setRotation_y:value];
+}
+
+- (NSNumber *)rotation_z
+{
+    return [NSNumber numberWithFloat:rotation_z];
+}
+
+- (void)setRotation_z:(NSNumber *)value
+{
+    rotation_z = [value floatValue];
+    [animationLayer setRotation_z:value];
+}
+
+- (NSNumber *)translation_x
+{
+    return [NSNumber numberWithFloat:translation_x];
+}
+
+- (void)setTranslation_x:(NSNumber *)value
+{
+   translation_x = [value floatValue];
+   [animationLayer setTranslation_x:value];
+}
+
+- (NSNumber *)translation_y
+{
+    return [NSNumber numberWithFloat:translation_y];
+}
+
+- (void)setTranslation_y:(NSNumber *)value
+{
+    translation_y = [value floatValue];
+    [animationLayer setTranslation_y:value];
+}
+
+- (NSNumber *)translation_z
+{
+    return [NSNumber numberWithFloat:translation_z];
+}
+
+- (void)setTranslation_z:(NSNumber *)value
+{
+    translation_z = [value floatValue];
+    [animationLayer setTranslation_z:value];
+}
 
 - (id)position
 {
-    return [NSDictionary dictionaryWithObjectsAndKeys:NUMFLOAT(position[0]),@"x",NUMFLOAT(position[1]),@"y",NUMFLOAT(position[2]),@"z",nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            self.translation_x,@"x",
+            self.translation_y,@"y",
+            self.translation_z,@"z",
+            nil];
 }
 
 - (void)setPosition:(id)value
 {
     ENSURE_DICT(value);
-    position[0] = [[value objectForKey:@"x"] floatValue];
-    position[1] = [[value objectForKey:@"y"] floatValue];
-    position[2] = [[value objectForKey:@"z"] floatValue];
+    self.translation_x = [value objectForKey:@"x"];
+    self.translation_y = [value objectForKey:@"y"];
+    self.translation_z = [value objectForKey:@"z"];
 }
 
 - (id)angle
 {
-    return [NSDictionary dictionaryWithObjectsAndKeys:NUMFLOAT(angle[0]),@"x",NUMFLOAT(angle[1]),@"y",NUMFLOAT(angle[2]),@"z",nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            self.rotation_x,@"x",
+            self.rotation_y,@"y",
+            self.rotation_z,@"z",
+            nil];
 }
 
 - (void)setAngle:(id)value
 {
     ENSURE_DICT(value);
-    angle[0] = [[value objectForKey:@"x"] floatValue];
-    angle[1] = [[value objectForKey:@"y"] floatValue];
-    angle[2] = [[value objectForKey:@"z"] floatValue];
+    self.rotation_x = [value objectForKey:@"x"];
+    self.rotation_y = [value objectForKey:@"y"];
+    self.rotation_z = [value objectForKey:@"z"];
+}
+
+- (AnimationLayer *)animationLayer
+{
+    if(animationLayer == nil){
+        animationLayer = [[AnimationLayer alloc] initWithTarget:self];
+    }
+    return animationLayer;
 }
 
 - (void)loadMatrix
 {
-    glRotatef(-angle[0], 1.0f, 0.0f, 0.0f);
-    glRotatef(-angle[1], 0.0f, 1.0f, 0.0f);
-    glRotatef(-angle[2], 0.0f, 0.0f, 1.0f);
-    glTranslatef(-position[0], -position[1], -position[2]);
+    glRotatef(-rotation_x, 1.0f, 0.0f, 0.0f);
+    glRotatef(-rotation_y, 0.0f, 1.0f, 0.0f);
+    glRotatef(-rotation_z, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-translation_x, -translation_y, -translation_z);
     
     /*
     glGetFloatv(GL_MODELVIEW_MATRIX, camera_matrix);
@@ -81,27 +163,30 @@
 {
     ENSURE_SINGLE_ARG(args, NSNumber);    
     
-    angle[0] += [args floatValue];
-    if(angle[0] > 180.0f){ angle[0] -= 360.0f; }
-    if(angle[0] < -180.0f){ angle[0] += 360.0f; }
+    rotation_x += [args floatValue];
+    if(rotation_x > 180.0f){ rotation_x -= 360.0f; }
+    if(rotation_x < -180.0f){ rotation_x += 360.0f; }
+    [animationLayer setRotation_x:NUMFLOAT(rotation_x)];
 }
 
 - (void)yaw:(id)args
 {
     ENSURE_SINGLE_ARG(args, NSNumber);
     
-    angle[1] += [args floatValue];    
-    if(angle[1] > 180.0f){ angle[1] -= 360.0f; }
-    if(angle[1] < -180.0f){ angle[1] += 360.0f; }
+    rotation_y += [args floatValue];    
+    if(rotation_y > 180.0f){ rotation_y -= 360.0f; }
+    if(rotation_y < -180.0f){ rotation_y += 360.0f; }
+    [animationLayer setRotation_y:NUMFLOAT(rotation_y)];
 }
 
 - (void)roll:(id)args
 {
     ENSURE_SINGLE_ARG(args, NSNumber);
     
-    angle[2] += [args floatValue];    
-    if(angle[2] > 180.0f){ angle[2] -= 360.0f; }
-    if(angle[2] < -180.0f){ angle[2] += 360.0f; }
+    rotation_z += [args floatValue];    
+    if(rotation_z > 180.0f){ rotation_z -= 360.0f; }
+    if(rotation_z < -180.0f){ rotation_z += 360.0f; }
+    [animationLayer setRotation_z:NUMFLOAT(rotation_z)];
 }
 
 - (void)move:(id)args
@@ -121,30 +206,124 @@
     vector[2] = [[args objectForKey:@"z"] floatValue];
     vector[3] = 0.0f;
 
-    glRotatef(angle[2], 0.0f, 0.0f, 1.0f);
-    glRotatef(angle[1], 0.0f, 1.0f, 0.0f);
-    glRotatef(angle[0], 1.0f, 0.0f, 0.0f);
+    glRotatef(rotation_z, 0.0f, 0.0f, 1.0f);
+    glRotatef(rotation_y, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotation_x, 1.0f, 0.0f, 0.0f);
     
     glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
 
     [self multifv:vector matrix:matrix];
     /*
     NSLog(@"angle:(%f,%f,%f) src:(%f,%f,%f) vec:(%f,%f,%f)", 
-          angle[0], angle[1], angle[2],
+          rotation_x, rotation_y, rotation_z,
           [[args objectForKey:@"x"] floatValue],[[args objectForKey:@"y"] floatValue],[[args objectForKey:@"z"] floatValue],
           vector[0],vector[1],vector[2]);
-     */
-    position[0] += vector[0];
-    position[1] += vector[1];
-    position[2] += vector[2];
+    */
+    NSDictionary *translation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 NUMFLOAT(translation_x+vector[0]),@"x",
+                                 NUMFLOAT(translation_y+vector[1]),@"y",
+                                 NUMFLOAT(translation_z+vector[2]),@"z",
+                                 nil];
+    NSDictionary *animateArgs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 translation, @"translation", 
+                                 NUMFLOAT(300), @"duration",
+                                 nil];
+    [self animate:[NSArray arrayWithObject:animateArgs]];
+    
     
     glPopMatrix();
 }
 
+- (void)animate:(id)args
+{
+    ENSURE_UI_THREAD_1_ARG(args);
+    
+    ENSURE_ARRAY(args);
+    
+    id params = [args objectAtIndex:0];
+    ENSURE_DICT(params);
+    
+    if([args count] > 1){
+        id callback = [args objectAtIndex:1];
+        ENSURE_TYPE(callback, KrollCallback);
+        if(callback){
+            animationCallback = callback;
+        }
+    }    
+    
+    float duration = [[params objectForKey:@"duration"] floatValue] / 1000.0f;
+    
+    NSArray *xyz = [NSArray arrayWithObjects:@"x",@"y",@"z", nil]; 
+    SEL get, set;
+    NSString *keyPath;
+    
+    for(NSString *axis in xyz){
+        get = NSSelectorFromString([NSString stringWithFormat:@"rotation_%@", axis]);            
+        set = NSSelectorFromString([NSString stringWithFormat:@"setRotation_%@:", axis]);            
+        keyPath = [NSString stringWithFormat:@"rotation_%@",axis];
+
+        if([params objectForKey:@"rotation"]){
+            id rotation = [params objectForKey:@"rotation"];
+            ENSURE_DICT(rotation);
+            
+            CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:keyPath];
+            anim.duration = duration;
+            anim.fromValue = [self performSelector:get];
+            anim.toValue = [rotation objectForKey:axis];
+            anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            anim.delegate = self;
+            
+            [animationLayer addAnimation:anim forKey:keyPath];
+            [animationLayer performSelector:set withObject:anim.toValue];
+        }else{
+            [animationLayer performSelector:set withObject:[self performSelector:get]];
+        }
+    }        
+    
+    for(NSString *axis in xyz){
+        get = NSSelectorFromString([NSString stringWithFormat:@"translation_%@", axis]);            
+        set = NSSelectorFromString([NSString stringWithFormat:@"setTranslation_%@:", axis]);            
+        keyPath = [NSString stringWithFormat:@"translation_%@",axis];
+
+        if([params objectForKey:@"translation"]){
+            id translation = [params objectForKey:@"translation"];
+            ENSURE_DICT(translation);
+            
+            CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:keyPath];
+            anim.duration = duration;
+            anim.fromValue = [self performSelector:get];
+            anim.toValue = [translation objectForKey:axis];
+            anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            anim.delegate = self;
+            
+            [animationLayer addAnimation:anim forKey:keyPath];
+            [animationLayer performSelector:set withObject:anim.toValue];
+        }else{
+            [animationLayer performSelector:set withObject:[self performSelector:get]];
+        }
+    }
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
+{   
+    if([[animationLayer animationKeys] count] == 0){
+        [animationCallback call:nil thisObject:self];
+        NSLog(@"animationDidStop.");
+    }
+}
+
 - (void)dealloc
 {
-    self.position = nil;
-    self.angle = nil;
+    RELEASE_TO_NIL(animationLayer);
+    
+    self.rotation_x = nil;
+    self.rotation_y = nil;
+    self.rotation_z = nil;
+    
+    self.translation_x = nil;
+    self.translation_y = nil;
+    self.translation_z = nil;
+    
     [super dealloc];
 }
 @end

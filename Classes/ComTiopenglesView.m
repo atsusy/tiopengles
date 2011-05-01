@@ -7,7 +7,7 @@
 //
 
 #import "ComTiopenglesView.h"
-#import "ComTiopengles3DModel.h"
+#import "ComTiopengles3DModelProxy.h"
 #import "ComTiopenglesCameraProxy.h"
 #import "opencv/cv.h"
 #import "opencv/cxcore.h"
@@ -19,7 +19,6 @@ static const float grid_ambient[4] = {0.2f, 0.2f, 0.2f, 1.0f};
 static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 
 @implementation ComTiopenglesView
-@synthesize camera;
 
 + (Class)layerClass 
 {
@@ -61,19 +60,29 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 - (void)setZNear_:(id)value
 {
 	zNear = [value floatValue];
-	NSLog(@"zNear set %f.", zNear);
+	//NSLog(@"zNear set %f.", zNear);
 }
 
 - (void)setZFar_:(id)value
 {
 	zFar = [value floatValue];
-	NSLog(@"zFar set %f.", zFar);
+	//NSLog(@"zFar set %f.", zFar);
 }
 
 - (void)setFieldOfView_:(id)value
 {
 	fieldOfView = [value floatValue];
-	NSLog(@"fieldOfView set %f.", fieldOfView);
+	//NSLog(@"fieldOfView set %f.", fieldOfView);
+}
+
+- (void)setCamera_:(id)value
+{
+    ENSURE_TYPE(value, ComTiopenglesCameraProxy);
+    if(camera){
+        [((ComTiopenglesCameraProxy *)camera).animationLayer removeFromSuperview];
+    }
+    camera = value;
+    [self.layer addSublayer:((ComTiopenglesCameraProxy *)camera).animationLayer];
 }
 
 - (void)setLights_:(id)value
@@ -84,21 +93,14 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 	lights = [value retain];
 }
 
-- (id)camera_
+- (NSNumber *)fps
 {
-    return self.camera;
+    return NUMFLOAT(fps);
 }
 
-- (void)setCamera_:(id)value
+- (NSNumber *)vertices
 {
-    ENSURE_TYPE(value, ComTiopenglesCameraProxy);
-    self.camera = value;
-}
-
-- (void)setDepthBuffer_:(id)value
-{
-	useDepthBuffer = [value intValue];
-	NSLog(@"userDepthBuffer set %d", useDepthBuffer);
+    return NUMINT(verticesCount);
 }
 
 - (void)setupLights
@@ -207,14 +209,11 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
     glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
     
-    if (useDepthBuffer) 
-    {
-        glGenRenderbuffersOES(1, &depthRenderbuffer);
-        glBindRenderbufferOES(GL_RENDERBUFFER_OES, depthRenderbuffer);
-        glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, backingWidth, backingHeight);
-        glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, depthRenderbuffer);
-        glEnable(GL_DEPTH_TEST);
-    }
+    glGenRenderbuffersOES(1, &depthRenderbuffer);
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, depthRenderbuffer);
+    glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, backingWidth, backingHeight);
+    glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, depthRenderbuffer);
+    glEnable(GL_DEPTH_TEST);
     
     if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) 
     {
@@ -222,18 +221,24 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
         return NO;
     }
 	
-	// setup view.
+	// setup view and lights.
 	[self setupView];
-    
-    if(sceneTimer){
-        [sceneTimer invalidate];
-        RELEASE_TO_NIL(sceneTimer);
-    }
-    sceneTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/60.0 
-                                                  target:self
-                                                selector:@selector(drawView:) 
-                                                userInfo:nil 
-                                                 repeats:YES];
+    [self setupLights];
+
+    // start refresh frame buffer
+    if(displayLink){
+        [displayLink invalidate];
+        RELEASE_TO_NIL(displayLink);
+    }    
+    displayLink = [[UIScreen mainScreen] displayLinkWithTarget:self 
+                                                      selector:@selector(drawFrame)];
+    fpsCalculated = [[NSDate date] retain];
+    frameCount = 0;
+    verticesCount = 0;
+    fpsCounted = [[NSDate date] retain];
+    [displayLink setFrameInterval:1];
+    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] 
+                      forMode:NSDefaultRunLoopMode];
 
     return YES;
 }
@@ -255,6 +260,8 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
         glDeleteRenderbuffersOES(1, &depthRenderbuffer);
         depthRenderbuffer = 0;
     }
+    
+    [displayLink invalidate];    
 }
 
 - (void)drawGrid
@@ -313,13 +320,13 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glDrawArrays(GL_LINES, 0, 2);
 }
 
-- (void)drawView:(NSTimer *)timer
+- (void)drawFrame
 {
     @synchronized(self){
-        if(sceneDrawing){
+        if(drawingFrame){
             return;
         }
-        sceneDrawing = YES;
+        drawingFrame = YES;
     }
     
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
@@ -333,38 +340,52 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    if(self.camera){
-        [self.camera loadMatrix];
+    if(camera){
+        [camera loadMatrix];
     }
     
-    [self setupLights];
     [self drawGrid];
     
-	for(id model in models)
-	{
+    int vertices = 0;
+    for(id model in models)
+    {
         glPushMatrix();
-		[model draw];
+        vertices += [model draw];
         glPopMatrix();
-	}
+    }
+    verticesCount = vertices;
 		
 	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
     [context presentRenderbuffer:GL_RENDERBUFFER_OES];
     
+    frameCount++;
+    double elapsed = [fpsCalculated timeIntervalSinceNow];
+    if(elapsed < -2.0f){
+        fps = (float)(frameCount / elapsed) * -1;
+        frameCount = 0;
+        RELEASE_TO_NIL(fpsCalculated);
+        fpsCalculated = [[NSDate date] retain]; 
+    }
+    
     @synchronized(self)
     {
-        sceneDrawing = NO;
+        drawingFrame = NO;
     }
 }
 
 - (void)addModel:(id)args
 {
     ENSURE_ARRAY(args)
+    
     id model = [args objectAtIndex:0];
-	ENSURE_TYPE(model, ComTiopengles3DModel);
-	if(!models)
+	ENSURE_TYPE(model, ComTiopengles3DModelProxy);
+	
+    if(!models)
 	{
 		models = [[NSMutableArray alloc] init];
 	}
+    
+    [self.layer addSublayer:[model animationLayer]];
 	[models addObject:model];
 }
 
@@ -373,16 +394,15 @@ static const float grid_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     [EAGLContext setCurrentContext:context];
     [self destroyFramebuffer];
     [self createFramebuffer];
-    [self drawView:nil];
 }
 
 - (void)dealloc
 {
-    self.camera = nil;
+    camera = nil;
 	RELEASE_TO_NIL(lights);
 	RELEASE_TO_NIL(models);
+    RELEASE_TO_NIL(fpsCalculated);
 	[self destroyFramebuffer];	
 	[super dealloc];
 }
-
 @end

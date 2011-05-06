@@ -12,8 +12,11 @@
 
 @interface ComTiopenglesViewProxy : TiViewProxy {
 }
+@property (nonatomic, assign) id debug;
 @property (nonatomic, readonly) id fps;
-@property (nonatomic, readonly) id vertices;
+@property (nonatomic, readonly) id triangles;
+@property (nonatomic, readonly) id particles;
 
-- (void)addModel:(id)model;
+- (void)addModel:(id)args;
+- (void)addParticleEmitter:(id)args;
 @end

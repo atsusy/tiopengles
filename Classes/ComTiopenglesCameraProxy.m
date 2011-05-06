@@ -122,6 +122,8 @@
 
 - (void)loadMatrix
 {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     glRotatef(-rotation_x, 1.0f, 0.0f, 0.0f);
     glRotatef(-rotation_y, 0.0f, 1.0f, 0.0f);
     glRotatef(-rotation_z, 0.0f, 0.0f, 1.0f);
@@ -308,7 +310,6 @@
 {   
     if([[animationLayer animationKeys] count] == 0){
         [animationCallback call:nil thisObject:self];
-        NSLog(@"animationDidStop.");
     }
 }
 

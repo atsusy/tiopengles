@@ -79,7 +79,7 @@
 
 - (void)allocAndCaluculateNormals:(MODEL_CHUNK *)model_chunkp
 {
-    //NSLog(@"[DEBUG] allocAndCaluculateNormals faces:%d vertices:%d", model_chunkp->num_faces, model_chunkp->num_vertices);
+    //NSLog(@"[DEBUG] allocAndCaluculateNormals vertices:%d", model_chunkp->num_vertices);
     // calculate normals
     if(model_chunkp->vertices){
         if(model_chunkp->normals){
@@ -94,12 +94,12 @@
         
         FACE *face = model_chunkp->faces;
         while(face != NULL){
-            NSLog(@"[DEBUG] face triangles:%d", face->num_triangles);
+            // NSLog(@"[DEBUG] face triangles:%d", face->num_triangles);
             for(int i = 0; i < face->num_triangles; i++){
                 f1 = face->triangles[i*3+0];
                 f2 = face->triangles[i*3+1];
                 f3 = face->triangles[i*3+2];
-                
+                                
                 p1[0] = model_chunkp->vertices[f1*3+0];
                 p1[1] = model_chunkp->vertices[f1*3+1];
                 p1[2] = model_chunkp->vertices[f1*3+2];
@@ -135,8 +135,8 @@
 }
 
 - (void)bindFacesAndMaterials{
-    for(id model_chunk in model_chunks){
-        MODEL_CHUNK *model_chunkp = (MODEL_CHUNK *)[model_chunk unsignedIntValue];
+    MODEL_CHUNK *model_chunkp = model_chunk;
+    while(model_chunkp){
         [self allocAndCaluculateNormals:model_chunkp];
 
         FACE *face = model_chunkp->faces;
@@ -145,19 +145,20 @@
                 MATERIAL *materialp = (MATERIAL *)[material unsignedIntValue];
                 if(strcmp(materialp->name, face->material_name) == 0){
                     face->material = materialp;
-                    NSLog(@"[DEBUG] face material found:%@", [NSString stringWithUTF8String:materialp->name]);
+                    //NSLog(@"[DEBUG] face material found:%@", [NSString stringWithUTF8String:materialp->name]);
                     break;
                 }
             }
             face = face->next;
-        }        
+        }  
+        
+        model_chunkp = model_chunkp->next;
     }
 }
 
 - (id)initWithData:(NSData *)data
 {
     dataSource = [data retain];
-    model_chunks = [[NSMutableArray alloc] init];
     materials = [[NSMutableArray alloc] init];
 
     const unsigned char *ptr = [dataSource bytes];
@@ -174,6 +175,7 @@
 
     MATERIAL *current_material = NULL;
     MODEL_CHUNK *current_model = NULL;
+    MODEL_CHUNK *next_model;
     FACE *current_face = NULL;
     
     while(ptr < ends)
@@ -186,7 +188,7 @@
         chunk_length = *((int *)ptr);
         ptr += sizeof(int);
         
-        //NSLog(@"[DEBUG] chunk_id:%x chunk_length:%x offset:%x", chunk_id, chunk_length, (char *)ptr - (const char *)[data bytes] - 6);        
+        NSLog(@"[DEBUG] chunk_id:%x chunk_length:%x offset:%x", chunk_id, chunk_length, (char *)ptr - (const char *)[data bytes] - 6);        
         switch (chunk_id) {
             case 0x0010:
             case 0x0013:
@@ -272,10 +274,13 @@
                 ptr += strlen((char *)ptr) + 1;
                 break;
 			case 0x4100:
+                next_model = calloc(sizeof(MODEL_CHUNK),1);
                 if(current_model){
-                    [model_chunks addObject:[NSNumber numberWithUnsignedInt:(unsigned int)current_model]];
-                }                     
-                current_model = calloc(sizeof(MODEL_CHUNK),1);
+                    current_model->next = next_model;
+                }else{
+                    model_chunk = next_model;
+                }
+                current_model = next_model;
                 current_face = NULL;
                 break;
 			case 0x4110: 
@@ -287,11 +292,26 @@
 				break;
 			case 0x4120:
                 face_length = *((unsigned short *)ptr);
-                //NSLog(@"[DEBUG] faces length:%d",face_length);
+                NSLog(@"[DEBUG] faces length:%d",face_length);
                 ptr += sizeof(unsigned short);
                 
                 facedesc_ptr = (unsigned short *)ptr;
                 ptr += face_length * 4 * sizeof(unsigned short);
+                
+                // when model has no material
+                if(!current_material){
+                    current_model->faces = calloc(sizeof(FACE), 1);
+                    current_face = current_model->faces;
+                    
+                    current_face->material_name = NULL;
+                    current_face->num_triangles = face_length;
+                    current_face->triangles = calloc(sizeof(unsigned short)*3*current_face->num_triangles,1);
+                    for(int i = 0; i < current_face->num_triangles; i++){
+                        current_face->triangles[i*3+0] = facedesc_ptr[i*4+0];
+                        current_face->triangles[i*3+1] = facedesc_ptr[i*4+1];
+                        current_face->triangles[i*3+2] = facedesc_ptr[i*4+2];                    
+                    }
+                }
                 break;
             case 0x4130:
                 if(current_model->faces == NULL){
@@ -384,11 +404,7 @@
     if(current_material){
         [materials addObject:[NSNumber numberWithUnsignedInt:(unsigned int)current_material]];
     }
-    
-    if(current_model){
-        [model_chunks addObject:[NSNumber numberWithUnsignedInt:(unsigned int)current_model]];
-    }
-    
+        
     [self bindFacesAndMaterials];
     
     //NSLog(@"[DEBUG] initWithData completed.");    
@@ -403,8 +419,10 @@
         free(material_p);
     }
     [materials release];
-    for(id model_chunk in model_chunks){
-        MODEL_CHUNK *model_chunkp = (MODEL_CHUNK *)[model_chunk unsignedIntValue];
+    
+    MODEL_CHUNK *model_chunkp = model_chunk;
+    MODEL_CHUNK *model_chunkp_next;
+    while(model_chunkp){
         if(model_chunkp->faces){
             FACE *face = model_chunkp->faces;
             while(face != NULL){
@@ -425,17 +443,17 @@
             free(model_chunkp->normals);
             model_chunkp->normals = NULL;
         }
+        model_chunkp_next = model_chunkp->next;
         free(model_chunkp);
+        model_chunkp = model_chunkp_next;
     }
-    [model_chunks release];
     
     [super dealloc];
 }
 
-- (NSArray *)model_chunks
+- (MODEL_CHUNK *)root
 {
-    return model_chunks;
+    return model_chunk;
 }
-
 
 @end

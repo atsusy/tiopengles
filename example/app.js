@@ -18,15 +18,27 @@ var camera = opengles.createCamera({
 });
 
 var view = opengles.createView({
-	zNear:5.0,
+	zNear:1,
 	zFar:1000.0,
 	fieldOfView:45.0,
 	lights:[ { ambient:{r:0.2,g:0.2,b:0.2}, 
 			   diffuse:{r:0.5,g:0.5,b:0.5}, 
 			  specular:{r:0.8,g:0.8,b:0.8},
 			  position:{x:100.0,y:100.0,z:100.0} } ],
-	camera:camera
+	camera:camera,
+	debug:true
 });
+
+var r2d2 = opengles.load3ds('modules/com.tiopengles/r2d2/r2d2.3ds');
+r2d2.rotation({x:-90.0,y:0.0,z:0.0});
+r2d2.translation({x:0.0,y:40.0,z:0.0});
+view.addModel(r2d2);
+
+var snow = opengles.loadpex('modules/com.tiopengles/snow.pex');
+view.addParticleEmitter(snow);
+
+var shower = opengles.loadpex('modules/com.tiopengles/showerofwater.pex');
+view.addParticleEmitter(shower);
 
 var touchmove_x, touchmove_y;
 view.addEventListener('touchmove', function(e){
@@ -44,12 +56,9 @@ window.add(view);
 view.addEventListener('touchend', function(e){
 	touchmove_x = undefined;
 	touchmove_y = undefined;
+	
+	shower.sourcePosition = {x:e.x, y:e.y};
 });
-
-var r2d2 = opengles.load3ds('modules/com.tiopengles/r2d2/r2d2.3ds');
-r2d2.rotation({x:-90.0,y:0.0,z:0.0});
-r2d2.translation({x:0.0,y:40.0,z:0.0});
-view.addModel(r2d2);
 
 var up = Ti.UI.createButton({
 	left:52,
@@ -148,7 +157,7 @@ window.addEventListener('open', function(){
 });
 
 setInterval(function(){
-	info.text = parseInt(view.fps)+"fps/"+ parseInt(view.vertices)+"vertices";
+	info.text = parseInt(view.fps)+"fps/"+parseInt(view.triangles)+"tris/"+parseInt(view.particles)+"ptcs";
 }, 1000);
 
 window.open();

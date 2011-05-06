@@ -10,7 +10,9 @@
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES1/gl.h>
 #import "TiUIView.h"
-#import "SceneLayer.h"
+#import "ComTiopenglesCameraProxy.h"
+#import "ComTiopengles3DModelProxy.h"
+#import "ComTiopenglesParticleEmitterProxy.h"
 
 #define LIGHTS_MAX	8
 
@@ -36,17 +38,20 @@
     id camera;
 	NSArray *lights;
 	NSMutableArray *models;
+    NSMutableArray *particleEmitters;
     
     CADisplayLink *displayLink;
-    int frameCount;
-    int verticesCount;
-    NSDate *fpsCounted;
-    BOOL drawingFrame;
-    float fps;
     NSDate *fpsCalculated;
+    NSDate *frameDrawn;
+    int frameCount;
+    int trianglesCount;
+    int particlesCount;
+    float fps;
 }
+@property (nonatomic) BOOL debug;
 @property (nonatomic, readonly) NSNumber *fps;
-@property (nonatomic, readonly) NSNumber *vertices;
+@property (nonatomic, readonly) NSNumber *triangles;
+@property (nonatomic, readonly) NSNumber *particles;
 
 - (void)setZNear_:(id)value;
 - (void)setZFar_:(id)value;
@@ -54,7 +59,8 @@
 - (void)setLights_:(id)value;
 - (void)setCamera_:(id)value;
 
-- (void)addModel:(id)args;
+- (void)addModel:(ComTiopengles3DModelProxy *)model;
+- (void)addParticleEmitter:(ComTiopenglesParticleEmitterProxy *)particleEmitter;
 
 - (void)setupLights;
 - (void)openContext;

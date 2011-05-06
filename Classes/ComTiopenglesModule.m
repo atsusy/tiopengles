@@ -4,11 +4,12 @@
  * Appcelerator Titanium is Copyright (c) 2009-2010 by Appcelerator, Inc.
  * and licensed under the Apache Public License (version 2)
  */
-#import "ComTiopenglesModule.h"
-#import "ComTiopengles3DModelProxy.h"
 #import "TiBase.h"
 #import "TiHost.h"
 #import "TiUtils.h"
+#import "ComTiopenglesModule.h"
+#import "ComTiopengles3DModelProxy.h"
+#import "ComTiopenglesParticleEmitterProxy.h"
 
 @implementation ComTiopenglesModule
 
@@ -93,6 +94,14 @@
     id filename = [args objectAtIndex:0];
     ENSURE_TYPE(filename, NSString);
 	return [ComTiopengles3DModelProxy load3ds:filename];
+}
+
+- (id)loadpex:(id)args
+{
+    ENSURE_ARRAY(args);
+    id filename = [args objectAtIndex:0];
+    ENSURE_TYPE(filename, NSString);
+    return [ComTiopenglesParticleEmitterProxy loadpex:filename];    
 }
 
 @end

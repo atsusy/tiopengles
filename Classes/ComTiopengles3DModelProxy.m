@@ -11,6 +11,8 @@
 #import "ModelData3ds.h"
 #import "ComTiopenglesView.h"
 
+#define BUFFER_OFFSET(bytes) ((GLubyte *)NULL + (bytes))
+
 @implementation ComTiopengles3DModelProxy
 @synthesize animationLayer;
 
@@ -24,7 +26,7 @@
 {
     GLuint genId;
 
-    NSString *type = [path pathExtension];
+    NSString *type = [[path pathExtension] lowercaseString];
     NSString *name = [[path stringByDeletingPathExtension] lastPathComponent];
     NSString *directory = [path stringByDeletingLastPathComponent]; 
 
@@ -86,20 +88,23 @@
 
 - (id)initWith3dsPath:(NSString *)path
 {    
-    NSString *type = [path pathExtension];
-    NSString *name = [[path stringByDeletingPathExtension] lastPathComponent];
-    NSString *directory = [path stringByDeletingLastPathComponent]; 
-    
-	NSString *filePath = [[NSBundle mainBundle] pathForResource:name ofType:type inDirectory:directory]; 
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    if(fileExists){
-        dataSourcePath = [path retain];
-        dataSource = [[ModelData3ds alloc] initWithData:[NSData dataWithContentsOfFile:filePath]];
-        animationLayer = [[AnimationLayer alloc] initWithTarget:self];
-        animationCallbacks = [[NSMutableDictionary alloc] init];
-        animationKeys = [[NSMutableDictionary alloc] init];
-    }else{
-        NSLog(@"[ERROR] 3ds file not exists:%@", path);
+    self = [super init];
+    if(self){
+        NSString *type = [path pathExtension];
+        NSString *name = [[path stringByDeletingPathExtension] lastPathComponent];
+        NSString *directory = [path stringByDeletingLastPathComponent]; 
+        
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:name ofType:type inDirectory:directory]; 
+        BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+        if(fileExists){
+            dataSourcePath = [path retain];
+            dataSource = [[ModelData3ds alloc] initWithData:[NSData dataWithContentsOfFile:filePath]];
+            animationLayer = [[AnimationLayer alloc] initWithTarget:self];
+            animationCallbacks = [[NSMutableDictionary alloc] init];
+            animationKeys = [[NSMutableDictionary alloc] init];
+        }else{
+            NSLog(@"[ERROR] 3ds file not exists:%@", path);
+        }        
     }
     return self;
 }
@@ -193,9 +198,9 @@
 }
 
 - (int)draw
-{
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
+{    
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     
     static float default_ambient[4] = {0.2, 0.2, 0.2, 1.0};
     static float default_diffuse[4] = {0.8, 0.8, 0.8, 1.0};
@@ -207,10 +212,9 @@
     glRotatef(rotation_y, 0.0, 1.0, 0.0);
     glRotatef(rotation_x, 1.0, 0.0, 0.0);
     
-    int verticesCount = 0;
-    for(id model_chunk in [dataSource model_chunks]){
-        MODEL_CHUNK *model_chunkp = (MODEL_CHUNK *)[model_chunk unsignedIntValue];
-
+    int trianglesCount = 0;
+    MODEL_CHUNK *model_chunkp = [dataSource root];
+    while(model_chunkp){
         // local coordinate system
         if(model_chunkp->local_coordinate){
             glPushMatrix();
@@ -226,12 +230,50 @@
              */
         }
         
-        verticesCount += model_chunkp->num_vertices;
-        glVertexPointer(3, GL_FLOAT, 0, model_chunkp->vertices);
-        glNormalPointer(GL_FLOAT, 0, model_chunkp->normals);
+        unsigned int vsize, nsize, tsize;
+        vsize = model_chunkp->num_vertices*3*sizeof(float);
+        nsize = model_chunkp->num_normals *3*sizeof(float);
+        tsize = model_chunkp->num_coords  *2*sizeof(float);
         
+        if(!model_chunkp->vbo){
+            glGenBuffers(1, &model_chunkp->vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, model_chunkp->vbo);
+            glBufferData(GL_ARRAY_BUFFER, 
+                         vsize+nsize+tsize,
+                         NULL,
+                         GL_STATIC_DRAW);
+            glBufferSubData(GL_ARRAY_BUFFER, 
+                            (GLintptr)BUFFER_OFFSET(0), 
+                            (GLsizeiptr)vsize, 
+                            (const GLvoid *)model_chunkp->vertices);
+            glBufferSubData(GL_ARRAY_BUFFER, 
+                            (GLintptr)BUFFER_OFFSET(vsize), 
+                            (GLsizeiptr)nsize, 
+                            (const GLvoid *)model_chunkp->normals);
+            glBufferSubData(GL_ARRAY_BUFFER, 
+                            (GLintptr)BUFFER_OFFSET(vsize+nsize), 
+                            (GLsizeiptr)tsize, 
+                            (const GLvoid *)model_chunkp->coords);
+        }else{
+            glBindBuffer(GL_ARRAY_BUFFER, model_chunkp->vbo);
+        }
+        
+        glVertexPointer(3, GL_FLOAT, 0, 0);
+        glNormalPointer(GL_FLOAT, 0, (GLvoid *)BUFFER_OFFSET(vsize));
+
         FACE *face = model_chunkp->faces;
         while (face != NULL) {
+            if(!face->ibo){
+                glGenBuffers(1, &face->ibo);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, face->ibo);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+                             face->num_triangles*3*sizeof(unsigned short),
+                             face->triangles,
+                             GL_STATIC_DRAW);
+            }else{
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, face->ibo);
+            }
+            
             if(face->material && 
                face->material->texture_name && 
                face->material->texture_id == 0)
@@ -244,7 +286,7 @@
                     face->material->texture_id = texture_id;
                     NSLog(@"[DEBUG] texture loaded id:%d path:%@", face->material->texture_id, texture_path);
                 }else{
-                    NSLog(@"[ERROR] texture not loaded path:%@", face->material->texture_id, texture_path);
+                    NSLog(@"[ERROR] texture not loaded path:%@", texture_path);
                 }
             }
             
@@ -254,20 +296,18 @@
                 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, face->material->specular);
                 glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, face->material->shineness);
             }else{
-                NSLog(@"[DEBUG] material is NULL.");
+                //NSLog(@"[DEBUG] material is NULL.");
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, default_ambient);
                 glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, default_diffuse);
                 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, default_specular);
                 glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, default_shineness);
             }
-            
+
             if(face->material &&
-               face->material->texture_id > 0)
-            {            
+               face->material->texture_id > 0){         
                 glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-                glTexCoordPointer(2, GL_FLOAT, 0, model_chunkp->coords);        
+                glTexCoordPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(vsize+nsize));        
                 
-                glEnable(GL_TEXTURE_2D);
                 glBindTexture(GL_TEXTURE_2D, face->material->texture_id);
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -275,9 +315,10 @@
                 glDisableClientState(GL_TEXTURE_COORD_ARRAY);            
                 glBindTexture(GL_TEXTURE_2D, 0);   
             }
-            glDrawElements(GL_TRIANGLES, face->num_triangles*3, GL_UNSIGNED_SHORT, face->triangles);
+
+            glDrawElements(GL_TRIANGLES, face->num_triangles*3, GL_UNSIGNED_SHORT, 0);
+            trianglesCount += face->num_triangles;
             
-            //glPopMatrix();
             face = face->next;
         }
         
@@ -285,10 +326,16 @@
             glPopMatrix();
         }
         //NSLog(@"[DEBUG] model chunk faces:%d", model_chunkp->num_faces);
+        model_chunkp = model_chunkp->next;
     }
     
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);   
-    return verticesCount;
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+
+    return trianglesCount;
 }
 
 - (NSString *)generateUuidString { 

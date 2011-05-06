@@ -14,7 +14,7 @@
     NSData *dataSource;
     
     NSMutableArray *materials;
-    NSMutableArray *model_chunks;
+    MODEL_CHUNK *model_chunk;
 }
 - (id)initWithData:(NSData *)data;
 @end

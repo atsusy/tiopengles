@@ -28,6 +28,8 @@ typedef struct tagFace {
     unsigned short *triangles;
     // link pointer
     struct tagFace *next;
+    // index buffer object
+    GLuint ibo;
 } FACE;
 
 typedef struct tagModelChunk
@@ -45,12 +47,14 @@ typedef struct tagModelChunk
     FACE *faces;
     // local coordinate system
     float *local_coordinate;
+    // vertex buffer object
+    GLuint vbo;
+    // link pointer
+    struct tagModelChunk *next;
 } MODEL_CHUNK;
 
 @protocol ModelDataProtocol <NSObject>
-// 
-// array of model chunks
-//
-- (NSArray *)model_chunks;
+- (MODEL_CHUNK *)root;
+
 @end
 

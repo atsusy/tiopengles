@@ -3,12 +3,12 @@
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/10.
-//  Copyright 2011 LANGRISE Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE. All rights reserved.
 //
 
-#import "ComTiopengles3DModelProxy.h"
 #import "TiUtils.h"
-#import "ModelData3ds.h"
+#import "ComTiopengles3DModelProxy.h"
+#import "ComTiopenglesModelData3ds.h"
 #import "ComTiopenglesView.h"
 
 #define BUFFER_OFFSET(bytes) ((GLubyte *)NULL + (bytes))
@@ -98,8 +98,8 @@
         BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
         if(fileExists){
             dataSourcePath = [path retain];
-            dataSource = [[ModelData3ds alloc] initWithData:[NSData dataWithContentsOfFile:filePath]];
-            animationLayer = [[AnimationLayer alloc] initWithTarget:self];
+            dataSource = [[ComTiopenglesModelData3ds alloc] initWithData:[NSData dataWithContentsOfFile:filePath]];
+            animationLayer = [[ComTiopenglesAnimationLayer alloc] initWithTarget:self];
             animationCallbacks = [[NSMutableDictionary alloc] init];
             animationKeys = [[NSMutableDictionary alloc] init];
         }else{

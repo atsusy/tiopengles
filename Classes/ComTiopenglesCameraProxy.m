@@ -3,7 +3,7 @@
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/28.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
 #import "ComTiopenglesCameraProxy.h"
@@ -112,10 +112,10 @@
     self.rotation_z = [value objectForKey:@"z"];
 }
 
-- (AnimationLayer *)animationLayer
+- (ComTiopenglesAnimationLayer *)animationLayer
 {
     if(animationLayer == nil){
-        animationLayer = [[AnimationLayer alloc] initWithTarget:self];
+        animationLayer = [[ComTiopenglesAnimationLayer alloc] initWithTarget:self];
     }
     return animationLayer;
 }

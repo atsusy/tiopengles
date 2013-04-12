@@ -1,14 +1,14 @@
 //
-//  AnimationLayer.m
+//  ComTiopenglesAnimationLayer.m
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/04/07.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
-#import "AnimationLayer.h"
+#import "ComTiopenglesAnimationLayer.h"
 
-@implementation AnimationLayer
+@implementation ComTiopenglesAnimationLayer
 @synthesize target;
 
 @synthesize rotation_x;
@@ -30,8 +30,8 @@
 - (id) initWithLayer:(id)layer 
 {
 	if((self = [super initWithLayer:layer])) {
-		if([layer isKindOfClass:[AnimationLayer class]]) {
-			AnimationLayer *other = (AnimationLayer *)layer;
+		if([layer isKindOfClass:[ComTiopenglesAnimationLayer class]]) {
+			ComTiopenglesAnimationLayer *other = (ComTiopenglesAnimationLayer *)layer;
             
             self.target = other.target;
             
@@ -59,7 +59,7 @@
 
 - (void)display
 {
-    AnimationLayer *pl = [self presentationLayer];
+    ComTiopenglesAnimationLayer *pl = [self presentationLayer];
 
     [target setRotation_x:pl.rotation_x];
     [target setRotation_y:pl.rotation_y];

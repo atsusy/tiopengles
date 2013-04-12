@@ -1,14 +1,14 @@
 //
-//  ModelData3ds.m
+//  ComTiopenglesModelData3ds.m
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/21.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
-#import "ModelData3ds.h"
+#import "ComTiopenglesModelData3ds.h"
 
-@implementation ModelData3ds
+@implementation ComTiopenglesModelData3ds
 
 - (BOOL)normalize:(const float *)input to:(float *)output
 {
@@ -134,7 +134,8 @@
     }    
 }
 
-- (void)bindFacesAndMaterials{
+- (void)bindFacesAndMaterials
+{
     MODEL_CHUNK *model_chunkp = model_chunk;
     while(model_chunkp){
         [self allocAndCaluculateNormals:model_chunkp];
@@ -188,7 +189,7 @@
         chunk_length = *((int *)ptr);
         ptr += sizeof(int);
         
-        NSLog(@"[DEBUG] chunk_id:%x chunk_length:%x offset:%x", chunk_id, chunk_length, (char *)ptr - (const char *)[data bytes] - 6);        
+        //NSLog(@"[DEBUG] chunk_id:%x chunk_length:%x offset:%x", chunk_id, chunk_length, (char *)ptr - (const char *)[data bytes] - 6);
         switch (chunk_id) {
             case 0x0010:
             case 0x0013:
@@ -270,7 +271,7 @@
 			case 0x3d3d:
                 break;
 			case 0x4000: 
-                NSLog(@"[DEBUG] model name:%@", [NSString stringWithUTF8String:(char *)ptr]);
+                //NSLog(@"[DEBUG] model name:%@", [NSString stringWithUTF8String:(char *)ptr]);
                 ptr += strlen((char *)ptr) + 1;
                 break;
 			case 0x4100:
@@ -286,13 +287,14 @@
 			case 0x4110: 
                 current_model->num_vertices = *((unsigned short *)ptr);
                 ptr += sizeof(unsigned short);
-
-                current_model->vertices = (float *)ptr;
-                ptr += sizeof(float) * (current_model->num_vertices * 3);
+                size_t size = sizeof(float) * (current_model->num_vertices * 3);
+                current_model->vertices = (float *)malloc(size);
+                memcpy(current_model->vertices, ptr, size);
+                ptr += size;
 				break;
 			case 0x4120:
                 face_length = *((unsigned short *)ptr);
-                NSLog(@"[DEBUG] faces length:%d",face_length);
+                //NSLog(@"[DEBUG] faces length:%d",face_length);
                 ptr += sizeof(unsigned short);
                 
                 facedesc_ptr = (unsigned short *)ptr;
@@ -442,6 +444,10 @@
         if(model_chunkp->normals){
             free(model_chunkp->normals);
             model_chunkp->normals = NULL;
+        }
+        if(model_chunkp->vertices){
+            free(model_chunkp->vertices);
+            model_chunkp->vertices = NULL;
         }
         model_chunkp_next = model_chunkp->next;
         free(model_chunkp);

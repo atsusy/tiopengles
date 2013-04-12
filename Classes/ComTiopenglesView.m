@@ -3,7 +3,7 @@
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/07.
-//  Copyright 2011 LANGRISE Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE. All rights reserved.
 //
 
 #import "opencv/cv.h"
@@ -31,7 +31,7 @@ static const float default_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 	
 	eaglLayer.opaque = NO;
 	eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-									[NSNumber numberWithBool:NO], 
+									[NSNumber numberWithBool:YES],
 									kEAGLDrawablePropertyRetainedBacking, 
 									kEAGLColorFormatRGBA8, 
 									kEAGLDrawablePropertyColorFormat, nil];
@@ -40,10 +40,10 @@ static const float default_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
 	
 	if (!context || ![EAGLContext setCurrentContext:context]) {
 		UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Error"
-														message:@"Cannot allocate EAGLContext."
-													   delegate:nil
-											  cancelButtonTitle:nil
-											  otherButtonTitles:@"OK", nil] autorelease];	
+                                                         message:@"Cannot allocate EAGLContext."
+                                                        delegate:nil
+                                               cancelButtonTitle:nil
+                                               otherButtonTitles:@"OK", nil] autorelease];	
 		[alert show];
 	}
 }
@@ -454,6 +454,64 @@ static const float default_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     [EAGLContext setCurrentContext:context];
     [self destroyFramebuffer];
     [self createFramebuffer];
+}
+
+- (id)toImage
+{
+    [EAGLContext setCurrentContext:context];
+
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
+
+    size_t w = backingWidth, h = backingHeight;
+	int bytesCount = 4 * w * h;
+    
+	GLubyte *data = malloc(bytesCount * sizeof(GLubyte));
+	
+    glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, data, bytesCount, NULL);
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	
+    CGImageRef cgImage = CGImageCreate(w,
+                                       h,
+                                       8,
+                                       32,
+                                       w * 4,
+                                       colorSpace,
+                                       kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast,
+                                       dataProvider,
+                                       NULL,
+                                       true,
+                                       kCGRenderingIntentDefault);
+ 	
+    NSInteger widthInPoints, heightInPoints;
+    if (NULL != UIGraphicsBeginImageContextWithOptions)
+    {
+        CGFloat scale = self.contentScaleFactor;
+        widthInPoints = w / scale; heightInPoints = h / scale;
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthInPoints, heightInPoints), NO, scale);
+    }
+    else
+    {
+        widthInPoints = w; heightInPoints = h;
+        UIGraphicsBeginImageContext(CGSizeMake(widthInPoints, heightInPoints));
+    }
+    
+    CGContextSetBlendMode(UIGraphicsGetCurrentContext(), kCGBlendModeCopy);
+    CGContextDrawImage(UIGraphicsGetCurrentContext(),
+                       CGRectMake(0, 0, widthInPoints, heightInPoints),
+                       cgImage);
+    
+    UIImage *uiImage = UIGraphicsGetImageFromCurrentImageContext();
+	
+	UIGraphicsEndImageContext();
+    
+    free(data);
+    CFRelease(dataProvider);
+	CGColorSpaceRelease(colorSpace);
+	CGImageRelease(cgImage);
+    
+	return uiImage;
 }
 
 - (void)dealloc

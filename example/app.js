@@ -26,7 +26,7 @@ var view = opengles.createView({
 			  specular:{r:0.8,g:0.8,b:0.8},
 			  position:{x:100.0,y:100.0,z:100.0} } ],
 	camera:camera,
-	debug:true
+	debug:false
 });
 
 var r2d2 = opengles.load3ds('modules/com.tiopengles/r2d2/r2d2.3ds');
@@ -153,6 +153,15 @@ window.add(info);
 window.addEventListener('open', function(){
 	r2d2.animate({rotation:{x:-90.0,y:90.0,z:0.0},duration:5000}, function(){
 		r2d2.animate({translation:{x:100.0,y:40.0,z:0.0},duration:5000});
+	});
+});
+
+Ti.Gesture.addEventListener('shake', function(e){
+	var image = window.toImage().imageWithComposite(view.toImage());
+	Ti.Media.saveToPhotoGallery(image, {
+		success:function(e){
+			alert("image was saved.");
+		}
 	});
 });
 

@@ -26,6 +26,8 @@
 		24DD6CFA1134B3F500162E58 /* ComTiopenglesModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DD6CF81134B3F500162E58 /* ComTiopenglesModule.m */; };
 		24DE9E1111C5FE74003F90F6 /* ComTiopenglesModuleAssets.h in Headers */ = {isa = PBXBuildFile; fileRef = 24DE9E0F11C5FE74003F90F6 /* ComTiopenglesModuleAssets.h */; };
 		24DE9E1211C5FE74003F90F6 /* ComTiopenglesModuleAssets.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DE9E1011C5FE74003F90F6 /* ComTiopenglesModuleAssets.m */; };
+		3121171016FE86F900758319 /* ComTiopenglesParticleEmitterProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 3121170E16FE86F900758319 /* ComTiopenglesParticleEmitterProxy.h */; };
+		3121171116FE86F900758319 /* ComTiopenglesParticleEmitterProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3121170F16FE86F900758319 /* ComTiopenglesParticleEmitterProxy.m */; };
 		3129741D13289396005C122A /* ComTiopengles3DModelProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 3129741B13289396005C122A /* ComTiopengles3DModelProxy.h */; };
 		3129741E13289396005C122A /* ComTiopengles3DModelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3129741C13289396005C122A /* ComTiopengles3DModelProxy.m */; };
 		31583C29136F892C0040B8D5 /* NSDataAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 31583C1C136F892C0040B8D5 /* NSDataAdditions.h */; };
@@ -37,23 +39,23 @@
 		31583C31136F892C0040B8D5 /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 31583C24136F892C0040B8D5 /* TBXML.m */; };
 		31583C32136F892C0040B8D5 /* TBXMLParticleAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 31583C25136F892C0040B8D5 /* TBXMLParticleAdditions.h */; };
 		31583C33136F892C0040B8D5 /* TBXMLParticleAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 31583C26136F892C0040B8D5 /* TBXMLParticleAdditions.m */; };
+		3163B3F01717B32E00BE00F1 /* libopencv_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3163B3EE1717B32E00BE00F1 /* libopencv_core.a */; };
+		3163B3F11717B32E00BE00F1 /* libopencv_lapack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3163B3EF1717B32E00BE00F1 /* libopencv_lapack.a */; };
 		31736C53136F8BF3006DA0DC /* Global.h in Headers */ = {isa = PBXBuildFile; fileRef = 31736C50136F8BF3006DA0DC /* Global.h */; };
 		31736C54136F8BF3006DA0DC /* Texture2D.h in Headers */ = {isa = PBXBuildFile; fileRef = 31736C51136F8BF3006DA0DC /* Texture2D.h */; };
 		31736C55136F8BF3006DA0DC /* Texture2D.m in Sources */ = {isa = PBXBuildFile; fileRef = 31736C52136F8BF3006DA0DC /* Texture2D.m */; };
-		317392C3134DB08C0038FEDD /* AnimationLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 317392C1134DB08C0038FEDD /* AnimationLayer.h */; };
-		317392C4134DB08C0038FEDD /* AnimationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 317392C2134DB08C0038FEDD /* AnimationLayer.m */; };
-		31C33A7213370B5100B61B0E /* ModelData3ds.h in Headers */ = {isa = PBXBuildFile; fileRef = 31C33A6F13370B5000B61B0E /* ModelData3ds.h */; };
-		31C33A7313370B5100B61B0E /* ModelData3ds.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C33A7013370B5100B61B0E /* ModelData3ds.m */; };
-		31C33A7413370B5100B61B0E /* ModelDataProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 31C33A7113370B5100B61B0E /* ModelDataProtocol.h */; };
-		31CFED221370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 31CFED201370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.h */; };
-		31CFED231370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 31CFED211370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.m */; };
+		317392C3134DB08C0038FEDD /* ComTiopenglesAnimationLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 317392C1134DB08C0038FEDD /* ComTiopenglesAnimationLayer.h */; };
+		317392C4134DB08C0038FEDD /* ComTiopenglesAnimationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 317392C2134DB08C0038FEDD /* ComTiopenglesAnimationLayer.m */; };
+		31A1698B1717C51A00BB791B /* TiBlob+Composite.h in Headers */ = {isa = PBXBuildFile; fileRef = 31A169891717C51A00BB791B /* TiBlob+Composite.h */; };
+		31A1698C1717C51A00BB791B /* TiBlob+Composite.m in Sources */ = {isa = PBXBuildFile; fileRef = 31A1698A1717C51A00BB791B /* TiBlob+Composite.m */; };
+		31C33A7213370B5100B61B0E /* ComTiopenglesModelData3ds.h in Headers */ = {isa = PBXBuildFile; fileRef = 31C33A6F13370B5000B61B0E /* ComTiopenglesModelData3ds.h */; };
+		31C33A7313370B5100B61B0E /* ComTiopenglesModelData3ds.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C33A7013370B5100B61B0E /* ComTiopenglesModelData3ds.m */; };
+		31C33A7413370B5100B61B0E /* ComTiopenglesModelDataProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 31C33A7113370B5100B61B0E /* ComTiopenglesModelDataProtocol.h */; };
 		31CFED441370F1DF006CDD0B /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CFED421370F1DF006CDD0B /* CoreFoundation.framework */; };
 		31CFED451370F1DF006CDD0B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CFED431370F1DF006CDD0B /* CoreGraphics.framework */; };
 		31CFED471370F1E3006CDD0B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CFED461370F1E3006CDD0B /* UIKit.framework */; };
 		31CFED491370F1EA006CDD0B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CFED481370F1EA006CDD0B /* OpenGLES.framework */; };
 		31CFED4B1370F1F9006CDD0B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CFED4A1370F1F8006CDD0B /* QuartzCore.framework */; };
-		31CFED4D1370F20C006CDD0B /* libopencv_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CFED4C1370F20B006CDD0B /* libopencv_core.a */; };
-		31CFED511370F5AC006CDD0B /* libopencv_lapack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CFED501370F5AC006CDD0B /* libopencv_lapack.a */; };
 		31EFD4351340244100B0F76F /* ComTiopenglesCameraProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 31EFD4331340244100B0F76F /* ComTiopenglesCameraProxy.h */; };
 		31EFD4361340244100B0F76F /* ComTiopenglesCameraProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 31EFD4341340244100B0F76F /* ComTiopenglesCameraProxy.m */; };
 		31FE644E132711EB00F3734D /* ComTiopenglesView.h in Headers */ = {isa = PBXBuildFile; fileRef = 31FE6445132711EB00F3734D /* ComTiopenglesView.h */; };
@@ -79,6 +81,8 @@
 		24DD6D1B1134B66800162E58 /* titanium.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = titanium.xcconfig; sourceTree = "<group>"; };
 		24DE9E0F11C5FE74003F90F6 /* ComTiopenglesModuleAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesModuleAssets.h; path = Classes/ComTiopenglesModuleAssets.h; sourceTree = "<group>"; };
 		24DE9E1011C5FE74003F90F6 /* ComTiopenglesModuleAssets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopenglesModuleAssets.m; path = Classes/ComTiopenglesModuleAssets.m; sourceTree = "<group>"; };
+		3121170E16FE86F900758319 /* ComTiopenglesParticleEmitterProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesParticleEmitterProxy.h; path = Classes/ComTiopenglesParticleEmitterProxy.h; sourceTree = "<group>"; };
+		3121170F16FE86F900758319 /* ComTiopenglesParticleEmitterProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopenglesParticleEmitterProxy.m; path = Classes/ComTiopenglesParticleEmitterProxy.m; sourceTree = "<group>"; };
 		3129741B13289396005C122A /* ComTiopengles3DModelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopengles3DModelProxy.h; path = Classes/ComTiopengles3DModelProxy.h; sourceTree = "<group>"; };
 		3129741C13289396005C122A /* ComTiopengles3DModelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopengles3DModelProxy.m; path = Classes/ComTiopengles3DModelProxy.m; sourceTree = "<group>"; };
 		31583C1C136F892C0040B8D5 /* NSDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NSDataAdditions.h; path = Classes/NSDataAdditions.h; sourceTree = "<group>"; };
@@ -90,24 +94,24 @@
 		31583C24136F892C0040B8D5 /* TBXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TBXML.m; path = Classes/TBXML.m; sourceTree = "<group>"; };
 		31583C25136F892C0040B8D5 /* TBXMLParticleAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TBXMLParticleAdditions.h; path = Classes/TBXMLParticleAdditions.h; sourceTree = "<group>"; };
 		31583C26136F892C0040B8D5 /* TBXMLParticleAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TBXMLParticleAdditions.m; path = Classes/TBXMLParticleAdditions.m; sourceTree = "<group>"; };
+		3163B3EE1717B32E00BE00F1 /* libopencv_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_core.a; path = opencv_universal/lib/libopencv_core.a; sourceTree = "<group>"; };
+		3163B3EF1717B32E00BE00F1 /* libopencv_lapack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_lapack.a; path = opencv_universal/lib/libopencv_lapack.a; sourceTree = "<group>"; };
 		31736C50136F8BF3006DA0DC /* Global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Global.h; path = Classes/Global.h; sourceTree = "<group>"; };
 		31736C51136F8BF3006DA0DC /* Texture2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Texture2D.h; path = Classes/Texture2D.h; sourceTree = "<group>"; };
 		31736C52136F8BF3006DA0DC /* Texture2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Texture2D.m; path = Classes/Texture2D.m; sourceTree = "<group>"; };
-		317392C1134DB08C0038FEDD /* AnimationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnimationLayer.h; path = Classes/AnimationLayer.h; sourceTree = "<group>"; };
-		317392C2134DB08C0038FEDD /* AnimationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnimationLayer.m; path = Classes/AnimationLayer.m; sourceTree = "<group>"; };
-		31C33A6F13370B5000B61B0E /* ModelData3ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelData3ds.h; path = Classes/ModelData3ds.h; sourceTree = "<group>"; };
-		31C33A7013370B5100B61B0E /* ModelData3ds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModelData3ds.m; path = Classes/ModelData3ds.m; sourceTree = "<group>"; };
-		31C33A7113370B5100B61B0E /* ModelDataProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelDataProtocol.h; path = Classes/ModelDataProtocol.h; sourceTree = "<group>"; };
-		31CFED201370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComTiopenglesParticleEmitterProxy.h; sourceTree = "<group>"; };
-		31CFED211370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComTiopenglesParticleEmitterProxy.m; sourceTree = "<group>"; };
+		317392C1134DB08C0038FEDD /* ComTiopenglesAnimationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesAnimationLayer.h; path = Classes/ComTiopenglesAnimationLayer.h; sourceTree = "<group>"; };
+		317392C2134DB08C0038FEDD /* ComTiopenglesAnimationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopenglesAnimationLayer.m; path = Classes/ComTiopenglesAnimationLayer.m; sourceTree = "<group>"; };
+		31A169891717C51A00BB791B /* TiBlob+Composite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "TiBlob+Composite.h"; path = "Classes/TiBlob+Composite.h"; sourceTree = "<group>"; };
+		31A1698A1717C51A00BB791B /* TiBlob+Composite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "TiBlob+Composite.m"; path = "Classes/TiBlob+Composite.m"; sourceTree = "<group>"; };
+		31C33A6F13370B5000B61B0E /* ComTiopenglesModelData3ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesModelData3ds.h; path = Classes/ComTiopenglesModelData3ds.h; sourceTree = "<group>"; };
+		31C33A7013370B5100B61B0E /* ComTiopenglesModelData3ds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopenglesModelData3ds.m; path = Classes/ComTiopenglesModelData3ds.m; sourceTree = "<group>"; };
+		31C33A7113370B5100B61B0E /* ComTiopenglesModelDataProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesModelDataProtocol.h; path = Classes/ComTiopenglesModelDataProtocol.h; sourceTree = "<group>"; };
 		31CFED251370E506006CDD0B /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		31CFED421370F1DF006CDD0B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		31CFED431370F1DF006CDD0B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		31CFED461370F1E3006CDD0B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		31CFED481370F1EA006CDD0B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		31CFED4A1370F1F8006CDD0B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		31CFED4C1370F20B006CDD0B /* libopencv_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_core.a; path = opencv_universal/lib/libopencv_core.a; sourceTree = "<group>"; };
-		31CFED501370F5AC006CDD0B /* libopencv_lapack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_lapack.a; path = opencv_universal/lib/libopencv_lapack.a; sourceTree = "<group>"; };
 		31EFD4331340244100B0F76F /* ComTiopenglesCameraProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesCameraProxy.h; path = Classes/ComTiopenglesCameraProxy.h; sourceTree = "<group>"; };
 		31EFD4341340244100B0F76F /* ComTiopenglesCameraProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComTiopenglesCameraProxy.m; path = Classes/ComTiopenglesCameraProxy.m; sourceTree = "<group>"; };
 		31FE6445132711EB00F3734D /* ComTiopenglesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComTiopenglesView.h; path = Classes/ComTiopenglesView.h; sourceTree = "<group>"; };
@@ -123,13 +127,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31CFED511370F5AC006CDD0B /* libopencv_lapack.a in Frameworks */,
-				31CFED4D1370F20C006CDD0B /* libopencv_core.a in Frameworks */,
 				31CFED4B1370F1F9006CDD0B /* QuartzCore.framework in Frameworks */,
 				31CFED491370F1EA006CDD0B /* OpenGLES.framework in Frameworks */,
 				31CFED471370F1E3006CDD0B /* UIKit.framework in Frameworks */,
 				31CFED441370F1DF006CDD0B /* CoreFoundation.framework in Frameworks */,
 				31CFED451370F1DF006CDD0B /* CoreGraphics.framework in Frameworks */,
+				3163B3F01717B32E00BE00F1 /* libopencv_core.a in Frameworks */,
+				3163B3F11717B32E00BE00F1 /* libopencv_lapack.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,6 +172,8 @@
 				24DE9E1011C5FE74003F90F6 /* ComTiopenglesModuleAssets.m */,
 				24DD6CF71134B3F500162E58 /* ComTiopenglesModule.h */,
 				24DD6CF81134B3F500162E58 /* ComTiopenglesModule.m */,
+				31A169891717C51A00BB791B /* TiBlob+Composite.h */,
+				31A1698A1717C51A00BB791B /* TiBlob+Composite.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -175,6 +181,8 @@
 		31736C58136F8E1F006DA0DC /* Particle */ = {
 			isa = PBXGroup;
 			children = (
+				3121170E16FE86F900758319 /* ComTiopenglesParticleEmitterProxy.h */,
+				3121170F16FE86F900758319 /* ComTiopenglesParticleEmitterProxy.m */,
 				31736C50136F8BF3006DA0DC /* Global.h */,
 				31736C51136F8BF3006DA0DC /* Texture2D.h */,
 				31736C52136F8BF3006DA0DC /* Texture2D.m */,
@@ -187,8 +195,6 @@
 				31583C24136F892C0040B8D5 /* TBXML.m */,
 				31583C25136F892C0040B8D5 /* TBXMLParticleAdditions.h */,
 				31583C26136F892C0040B8D5 /* TBXMLParticleAdditions.m */,
-				31CFED201370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.h */,
-				31CFED211370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.m */,
 			);
 			name = Particle;
 			sourceTree = "<group>";
@@ -198,9 +204,9 @@
 			children = (
 				3129741B13289396005C122A /* ComTiopengles3DModelProxy.h */,
 				3129741C13289396005C122A /* ComTiopengles3DModelProxy.m */,
-				31C33A6F13370B5000B61B0E /* ModelData3ds.h */,
-				31C33A7013370B5100B61B0E /* ModelData3ds.m */,
-				31C33A7113370B5100B61B0E /* ModelDataProtocol.h */,
+				31C33A6F13370B5000B61B0E /* ComTiopenglesModelData3ds.h */,
+				31C33A7013370B5100B61B0E /* ComTiopenglesModelData3ds.m */,
+				31C33A7113370B5100B61B0E /* ComTiopenglesModelDataProtocol.h */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -208,8 +214,8 @@
 		31736C5A136F8E6C006DA0DC /* Animation */ = {
 			isa = PBXGroup;
 			children = (
-				317392C1134DB08C0038FEDD /* AnimationLayer.h */,
-				317392C2134DB08C0038FEDD /* AnimationLayer.m */,
+				317392C1134DB08C0038FEDD /* ComTiopenglesAnimationLayer.h */,
+				317392C2134DB08C0038FEDD /* ComTiopenglesAnimationLayer.m */,
 			);
 			name = Animation;
 			sourceTree = "<group>";
@@ -237,8 +243,8 @@
 		31CFED4E1370F242006CDD0B /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				31CFED501370F5AC006CDD0B /* libopencv_lapack.a */,
-				31CFED4C1370F20B006CDD0B /* libopencv_core.a */,
+				3163B3EE1717B32E00BE00F1 /* libopencv_core.a */,
+				3163B3EF1717B32E00BE00F1 /* libopencv_lapack.a */,
 				31CFED251370E506006CDD0B /* libz.dylib */,
 			);
 			name = Libraries;
@@ -278,10 +284,10 @@
 				31FE644E132711EB00F3734D /* ComTiopenglesView.h in Headers */,
 				31FE6450132711EB00F3734D /* ComTiopenglesViewProxy.h in Headers */,
 				3129741D13289396005C122A /* ComTiopengles3DModelProxy.h in Headers */,
-				31C33A7213370B5100B61B0E /* ModelData3ds.h in Headers */,
-				31C33A7413370B5100B61B0E /* ModelDataProtocol.h in Headers */,
+				31C33A7213370B5100B61B0E /* ComTiopenglesModelData3ds.h in Headers */,
+				31C33A7413370B5100B61B0E /* ComTiopenglesModelDataProtocol.h in Headers */,
 				31EFD4351340244100B0F76F /* ComTiopenglesCameraProxy.h in Headers */,
-				317392C3134DB08C0038FEDD /* AnimationLayer.h in Headers */,
+				317392C3134DB08C0038FEDD /* ComTiopenglesAnimationLayer.h in Headers */,
 				31583C29136F892C0040B8D5 /* NSDataAdditions.h in Headers */,
 				31583C2B136F892C0040B8D5 /* ParticleEmitter.h in Headers */,
 				31583C2F136F892C0040B8D5 /* Structures.h in Headers */,
@@ -289,7 +295,8 @@
 				31583C32136F892C0040B8D5 /* TBXMLParticleAdditions.h in Headers */,
 				31736C53136F8BF3006DA0DC /* Global.h in Headers */,
 				31736C54136F8BF3006DA0DC /* Texture2D.h in Headers */,
-				31CFED221370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.h in Headers */,
+				3121171016FE86F900758319 /* ComTiopenglesParticleEmitterProxy.h in Headers */,
+				31A1698B1717C51A00BB791B /* TiBlob+Composite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,15 +372,16 @@
 				31FE644F132711EB00F3734D /* ComTiopenglesView.m in Sources */,
 				31FE6451132711EB00F3734D /* ComTiopenglesViewProxy.m in Sources */,
 				3129741E13289396005C122A /* ComTiopengles3DModelProxy.m in Sources */,
-				31C33A7313370B5100B61B0E /* ModelData3ds.m in Sources */,
+				31C33A7313370B5100B61B0E /* ComTiopenglesModelData3ds.m in Sources */,
 				31EFD4361340244100B0F76F /* ComTiopenglesCameraProxy.m in Sources */,
-				317392C4134DB08C0038FEDD /* AnimationLayer.m in Sources */,
+				317392C4134DB08C0038FEDD /* ComTiopenglesAnimationLayer.m in Sources */,
 				31583C2A136F892C0040B8D5 /* NSDataAdditions.m in Sources */,
 				31583C2C136F892C0040B8D5 /* ParticleEmitter.m in Sources */,
 				31583C31136F892C0040B8D5 /* TBXML.m in Sources */,
 				31583C33136F892C0040B8D5 /* TBXMLParticleAdditions.m in Sources */,
 				31736C55136F8BF3006DA0DC /* Texture2D.m in Sources */,
-				31CFED231370D3CF006CDD0B /* ComTiopenglesParticleEmitterProxy.m in Sources */,
+				3121171116FE86F900758319 /* ComTiopenglesParticleEmitterProxy.m in Sources */,
+				31A1698C1717C51A00BB791B /* TiBlob+Composite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

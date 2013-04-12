@@ -1,16 +1,16 @@
 //
-//  ModelData3ds.h
+//  ComTiopenglesModelData3ds.h
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/21.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "ModelDataProtocol.h"
+#import "ComTiopenglesModelDataProtocol.h"
 
 
-@interface ModelData3ds : NSObject <ModelDataProtocol> {
+@interface ComTiopenglesModelData3ds : NSObject <ComTiopenglesModelDataProtocol> {
     NSData *dataSource;
     
     NSMutableArray *materials;

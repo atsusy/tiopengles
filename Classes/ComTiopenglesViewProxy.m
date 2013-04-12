@@ -3,10 +3,11 @@
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/07.
-//  Copyright 2011 LANGRISE Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE. All rights reserved.
 //
 
 #import "ComTiopenglesViewProxy.h"
+#import "TiBlob.h"
 
 @implementation ComTiopenglesViewProxy
 
@@ -64,7 +65,40 @@
 
 - (void)viewDidDetach
 {
-	[(ComTiopenglesView *)[self view] closeContext];	
+	[(ComTiopenglesView *)[self view] closeContext];
 }
 
+- (TiBlob *)toImage:(id)args
+{
+    KrollCallback *callback = nil;
+    BOOL honorScale = NO;
+    
+    NSObject *obj = nil;
+    if( [args count] > 0) {
+        obj = [args objectAtIndex:0];
+        
+        if (obj == [NSNull null]) {
+            obj = nil;
+        }
+        
+        if( [args count] > 1) {
+            honorScale = [TiUtils boolValue:[args objectAtIndex:1] def:NO];
+        }
+    }
+    callback = (KrollCallback*)obj;
+    TiBlob *blob = [[[TiBlob alloc] init] autorelease];
+    
+    TiThreadPerformOnMainThread(^{
+        id image = [(ComTiopenglesView *)[self view] toImage];
+		[blob setImage:image];
+        [blob setMimeType:@"image/png" type:TiBlobTypeImage];
+		if (callback != nil)
+		{
+			NSDictionary *event = [NSDictionary dictionaryWithObject:blob forKey:@"blob"];
+			[self _fireEventToListener:@"blob" withObject:event listener:callback thisObject:nil];
+		}
+    }, (callback==nil));
+    
+    return blob;
+}
 @end

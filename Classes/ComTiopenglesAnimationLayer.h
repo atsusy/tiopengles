@@ -1,16 +1,16 @@
 //
-//  AnimationLayer.h
+//  ComTiopenglesAnimationLayer.h
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/04/07.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ComTiopengles3DModelProxy.h"
 
-@interface AnimationLayer : CALayer {
+@interface ComTiopenglesAnimationLayer : CALayer {
     id target;
 }
 

@@ -1,9 +1,9 @@
 //
-//  ModelDataProtocol.h
+//  ComTiopenglesModelDataProtocol.h
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/21.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -53,7 +53,7 @@ typedef struct tagModelChunk
     struct tagModelChunk *next;
 } MODEL_CHUNK;
 
-@protocol ModelDataProtocol <NSObject>
+@protocol ComTiopenglesModelDataProtocol <NSObject>
 - (MODEL_CHUNK *)root;
 
 @end

@@ -3,15 +3,15 @@
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/10.
-//  Copyright 2011 LANGRISE Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <OpenGLES/ES1/gl.h>
 #import "TiProxy.h"
-#import "ModelDataProtocol.h"
-#import "AnimationLayer.h"
+#import "ComTiopenglesModelDataProtocol.h"
+#import "ComTiopenglesAnimationLayer.h"
 
 @interface ComTiopengles3DModelProxy : TiProxy {
     id animationLayer;
@@ -25,7 +25,7 @@
     float translation_z;
     
     NSString *dataSourcePath;
-    id<ModelDataProtocol> dataSource;
+    id<ComTiopenglesModelDataProtocol> dataSource;
     
     NSMutableDictionary *animationCallbacks;
     NSMutableDictionary *animationKeys;

@@ -3,12 +3,12 @@
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/03/28.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "TiProxy.h"
-#import "AnimationLayer.h"
+#import "ComTiopenglesAnimationLayer.h"
 
 @interface ComTiopenglesCameraProxy : TiProxy {
     id animationLayer;

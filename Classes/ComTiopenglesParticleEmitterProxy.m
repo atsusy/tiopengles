@@ -3,7 +3,7 @@
 //  tiopengles
 //
 //  Created by KATAOKA,Atsushi on 11/05/04.
-//  Copyright 2011 Langrise Co.,Ltd. All rights reserved.
+//  Copyright 2013 MARSHMALLOW MACHINE All rights reserved.
 //
 
 #import "TiPoint.h"

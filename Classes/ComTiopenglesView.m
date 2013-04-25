@@ -456,7 +456,7 @@ static const float default_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     [self createFramebuffer];
 }
 
-- (id)toImage
+- (id)toImage:(BOOL)honorScale
 {
     [EAGLContext setCurrentContext:context];
 
@@ -484,22 +484,18 @@ static const float default_specular[4] = {0.0f, 0.0f, 0.0f, 1.0f};
                                        true,
                                        kCGRenderingIntentDefault);
  	
-    NSInteger widthInPoints, heightInPoints;
     if (NULL != UIGraphicsBeginImageContextWithOptions)
-    {
-        CGFloat scale = self.contentScaleFactor;
-        widthInPoints = w / scale; heightInPoints = h / scale;
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthInPoints, heightInPoints), NO, scale);
+    {        
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(w, h), NO, (honorScale ? 0.0 : 1.0));
     }
     else
     {
-        widthInPoints = w; heightInPoints = h;
-        UIGraphicsBeginImageContext(CGSizeMake(widthInPoints, heightInPoints));
+        UIGraphicsBeginImageContext(CGSizeMake(w, h));
     }
     
     CGContextSetBlendMode(UIGraphicsGetCurrentContext(), kCGBlendModeCopy);
     CGContextDrawImage(UIGraphicsGetCurrentContext(),
-                       CGRectMake(0, 0, widthInPoints, heightInPoints),
+                       CGRectMake(0, 0, w, h),
                        cgImage);
     
     UIImage *uiImage = UIGraphicsGetImageFromCurrentImageContext();

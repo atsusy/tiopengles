@@ -68,5 +68,5 @@
 - (BOOL)createFramebuffer;
 - (void)destroyFramebuffer;
 
-- (id)toImage;
+- (id)toImage:(BOOL)honorScale;
 @end

@@ -157,7 +157,8 @@ window.addEventListener('open', function(){
 });
 
 Ti.Gesture.addEventListener('shake', function(e){
-	var image = window.toImage().imageWithComposite(view.toImage());
+	var image = window.toImage(null, true).imageWithComposite(view.toImage(null, true));
+	alert("image size:" + image.width + "," + image.height);
 	Ti.Media.saveToPhotoGallery(image, {
 		success:function(e){
 			alert("image was saved.");

@@ -17,7 +17,10 @@
 
     if(self.type != TiBlobTypeImage || overlay.type != TiBlobTypeImage) { return self; }
     
-    CGRect r = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
+    CGRect r = CGRectMake(0,
+                          0,
+                          CGImageGetWidth(self.image.CGImage),
+                          CGImageGetHeight(self.image.CGImage));
     UIGraphicsBeginImageContext(r.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     

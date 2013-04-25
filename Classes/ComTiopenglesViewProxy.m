@@ -89,7 +89,7 @@
     TiBlob *blob = [[[TiBlob alloc] init] autorelease];
     
     TiThreadPerformOnMainThread(^{
-        id image = [(ComTiopenglesView *)[self view] toImage];
+        id image = [(ComTiopenglesView *)[self view] toImage:honorScale];
 		[blob setImage:image];
         [blob setMimeType:@"image/png" type:TiBlobTypeImage];
 		if (callback != nil)
